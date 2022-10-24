@@ -1,6 +1,8 @@
 package com.emendes.aluraflixapi.service;
 
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
+import com.emendes.aluraflixapi.exception.VideoNotFoundException;
+import com.emendes.aluraflixapi.model.entity.Video;
 import com.emendes.aluraflixapi.repository.VideoRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,6 +20,13 @@ public class VideoService {
   public Page<VideoResponse> findAll(Pageable pageable) {
     return videoRepository.findAll(pageable)
         .map(v -> mapper.map(v, VideoResponse.class));
+  }
+
+  public VideoResponse findById(long id) {
+    Video video = videoRepository.findById(id)
+        .orElseThrow(() -> new VideoNotFoundException("Video not found for id: "+id));
+
+    return mapper.map(video, VideoResponse.class);
   }
 
 }
