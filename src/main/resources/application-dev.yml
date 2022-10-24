@@ -1,0 +1,25 @@
+# Datasource
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/aluraflix-db
+    username: ${DB_USERNAME_DEV}
+    password: ${DB_PASSWORD_DEV}
+    driver-class-name: org.postgresql.Driver
+
+  # jpa
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+
+# log
+logging:
+  level:
+    org:
+      hibernate:
+        sql: DEBUG
+        type: trace
