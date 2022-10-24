@@ -1,5 +1,6 @@
 package com.emendes.aluraflixapi.service;
 
+import com.emendes.aluraflixapi.dto.request.VideoRequest;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.VideoNotFoundException;
 import com.emendes.aluraflixapi.model.entity.Video;
@@ -9,6 +10,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @AllArgsConstructor
 @Service
@@ -29,4 +33,9 @@ public class VideoService {
     return mapper.map(video, VideoResponse.class);
   }
 
+  public VideoResponse create(VideoRequest videoRequest) {
+    Video videoToBeSaved = mapper.map(videoRequest, Video.class);
+    videoToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+    return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
+  }
 }
