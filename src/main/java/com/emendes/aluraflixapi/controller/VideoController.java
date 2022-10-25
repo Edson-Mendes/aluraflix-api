@@ -28,12 +28,12 @@ public class VideoController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<VideoResponse> findById(@PathVariable(name = "id") long id){
+  public ResponseEntity<VideoResponse> findById(@PathVariable(name = "id") long id) {
     return ResponseEntity.ok(videoService.findById(id));
   }
 
   @PostMapping
-  public ResponseEntity<VideoResponse> create(@RequestBody @Valid VideoRequest videoRequest, UriComponentsBuilder uriBuilder){
+  public ResponseEntity<VideoResponse> create(@RequestBody @Valid VideoRequest videoRequest, UriComponentsBuilder uriBuilder) {
     VideoResponse videoResponse = videoService.create(videoRequest);
     URI uri = uriBuilder.path("/videos/{id}").build(videoResponse.getId());
     return ResponseEntity.created(uri).body(videoResponse);
@@ -42,6 +42,12 @@ public class VideoController {
   @PutMapping("/{id}")
   public ResponseEntity<VideoResponse> update(@PathVariable(name = "id") long id, @RequestBody @Valid VideoRequest videoRequest) {
     return ResponseEntity.ok(videoService.update(id, videoRequest));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable(name = "id") long id) {
+    videoService.deleteById(id);
+    return ResponseEntity.noContent().build();
   }
 
 }

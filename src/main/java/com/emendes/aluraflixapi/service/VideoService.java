@@ -27,21 +27,19 @@ public class VideoService {
   }
 
   public VideoResponse findById(long id) {
-    Video video = videoRepository.findById(id)
-        .orElseThrow(() -> new VideoNotFoundException("Video not found for id: "+id));
-
-    return mapper.map(video, VideoResponse.class);
+    return mapper.map(findVideoById(id), VideoResponse.class);
   }
 
   public VideoResponse create(VideoRequest videoRequest) {
     Video videoToBeSaved = mapper.map(videoRequest, Video.class);
     videoToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+
     return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
   }
 
   public VideoResponse update(long id, VideoRequest videoRequest) {
-    Video videoToBeUpdated = videoRepository.findById(id)
-        .orElseThrow(() -> new VideoNotFoundException("Video not found for id: "+id));
+    Video videoToBeUpdated = findVideoById(id);
+
     videoToBeUpdated.setTitle(videoRequest.getTitle());
     videoToBeUpdated.setDescription(videoRequest.getDescription());
     videoToBeUpdated.setUrl(videoRequest.getUrl());
@@ -49,4 +47,13 @@ public class VideoService {
     return mapper.map(videoRepository.save(videoToBeUpdated), VideoResponse.class);
   }
 
+  public void deleteById(long id) {
+    Video video = findVideoById(id);
+    videoRepository.delete(video);
+  }
+
+  private Video findVideoById(long id) {
+    return videoRepository.findById(id)
+        .orElseThrow(() -> new VideoNotFoundException("Video not found for id: " + id));
+  }
 }
