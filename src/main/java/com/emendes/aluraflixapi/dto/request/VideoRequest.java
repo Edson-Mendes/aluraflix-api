@@ -1,12 +1,14 @@
 package com.emendes.aluraflixapi.dto.request;
 
 import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Getter
+@ToString
 public class VideoRequest {
 
   @NotBlank(message = "title must not be null or blank")

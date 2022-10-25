@@ -39,4 +39,9 @@ public class VideoController {
     return ResponseEntity.created(uri).body(videoResponse);
   }
 
+  @PutMapping("/{id}")
+  public ResponseEntity<VideoResponse> update(@PathVariable(name = "id") long id, @RequestBody @Valid VideoRequest videoRequest) {
+    return ResponseEntity.ok(videoService.update(id, videoRequest));
+  }
+
 }

@@ -38,4 +38,15 @@ public class VideoService {
     videoToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
     return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
   }
+
+  public VideoResponse update(long id, VideoRequest videoRequest) {
+    Video videoToBeUpdated = videoRepository.findById(id)
+        .orElseThrow(() -> new VideoNotFoundException("Video not found for id: "+id));
+    videoToBeUpdated.setTitle(videoRequest.getTitle());
+    videoToBeUpdated.setDescription(videoRequest.getDescription());
+    videoToBeUpdated.setUrl(videoRequest.getUrl());
+
+    return mapper.map(videoRepository.save(videoToBeUpdated), VideoResponse.class);
+  }
+
 }
