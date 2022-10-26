@@ -1,13 +1,16 @@
 package com.emendes.aluraflixapi.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Getter
+@AllArgsConstructor
 @ToString
 public class VideoRequest {
 
@@ -24,4 +27,23 @@ public class VideoRequest {
   @URL(message = "must be a well-formed url")
   private String url;
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    VideoRequest that = (VideoRequest) o;
+
+    if (!Objects.equals(title, that.title)) return false;
+    if (!Objects.equals(description, that.description)) return false;
+    return Objects.equals(url, that.url);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = title != null ? title.hashCode() : 0;
+    result = 31 * result + (description != null ? description.hashCode() : 0);
+    result = 31 * result + (url != null ? url.hashCode() : 0);
+    return result;
+  }
 }

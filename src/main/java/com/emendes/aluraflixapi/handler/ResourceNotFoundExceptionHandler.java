@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class ResourceNotFoundExceptionHandler {
 
   @ExceptionHandler(VideoNotFoundException.class)
-  public ResponseEntity<ExceptionDetails> handleResourceNotFound(VideoNotFoundException exception, HttpServletRequest request){
+  public ResponseEntity<ExceptionDetails> handleResourceNotFound(VideoNotFoundException exception, HttpServletRequest request) {
     ExceptionDetails details = ExceptionDetails.builder()
         .status(HttpStatus.NOT_FOUND.value())
         .title("Resource not found")

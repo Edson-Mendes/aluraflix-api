@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class MethodArgumentNotValidHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ValidationExceptionDetails> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpServletRequest request){
+  public ResponseEntity<ValidationExceptionDetails> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpServletRequest request) {
     List<FieldError> fieldErrors = exception.getFieldErrors();
 
     String fields = fieldErrors.stream().map(FieldError::getField).collect(Collectors.joining("; "));
