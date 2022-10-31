@@ -4,7 +4,7 @@
 ![Badge Java](https://img.shields.io/static/v1?label=Java&message=17&color=red&style=for-the-badge&logo=java)
 ![Badge Spring](https://img.shields.io/static/v1?label=SpringBoot&message=v2.7.5&color=brightgreen&style=for-the-badge&logo=SpringBoot)
 ![Badge JUnit5](https://img.shields.io/static/v1?label=JUnit5&message=v5.8.2&color=green&style=for-the-badge&logo=junit5)
-![Badge JUnit5](https://img.shields.io/static/v1?label=PostgreSQL&message=v14.4&color=blue&style=for-the-badge&logo=PostgreSQL)
+![Badge Postgresql](https://img.shields.io/static/v1?label=PostgreSQL&message=v14.4&color=blue&style=for-the-badge&logo=PostgreSQL)
 
 ## :book: Resumo do projeto
 
@@ -13,19 +13,18 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
 ## :bulb: Funcionalidades
 
 - `Vídeos`
-  - `cadastrar`: Cadastro de vídeo através de um POST para **/videos** com as informações de title, description e url do
-    vídeo no corpo da requisição.
-  
+  - `Cadastrar`: Cadastro de vídeo através de um POST para **/videos** com as informações de *title*, *description* e *url* do
+    vídeo no corpo da requisição. Segue abaixo um exemplo do **corpo da requisição**.</br></br>
+
   ```json
     {
-      "id": 100,
       "title": "vídeo xpto",
       "description": "descrição do vídeo xpto",
-      "url": "http://www.xptovideos.com/duwehdiwehdhweuhd9487jh82"  
+      "url": "http://www.xpto.com/duwehdiwehdhweuhd9487jh82"  
     }
   ```
 
-  - `Buscar`: Busca paginada de videos através de um GET para **/videos**.
+  - `Buscar`: Busca paginada de videos através de um GET para **/videos**. Segue abaixo um exemplo do **corpo da resposta**.</br></br>
   
   ```json
     {
@@ -34,7 +33,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
             "id": 100,
             "title": "vídeo xpto",
             "description": "descrição do vídeo xpto",
-            "url": "http://www.xptovideos.com/duwehdiwehdhweuhd9487jh82"
+            "url": "http://www.xpto.com/duwehdiwehdhweuhd9487jh82"
         }
       ],
       "pageable": {
@@ -65,38 +64,36 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
     }
   ```
 
-  - `Buscar por id`: Busca vídeo por id através de um GET para **/videos/{ID}**, onde *{ID}* é o identificador do vídeo.
+  - `Buscar por id`: Busca vídeo por id através de um GET para **/videos/{ID}**, onde *{ID}* é o identificador do vídeo. 
+  Segue abaixo um exemplo do **corpo da resposta**.</br></br>
   
   ```json
     {
       "id": 100,
       "title": "vídeo xpto",
       "description": "descrição do vídeo xpto",
-      "url": "http://www.xptovideos.com/duwehdiwehdhweuhd9487jh82"
+      "url": "http://www.xpto.com/duwehdiwehdhweuhd9487jh82"
     }
   ```
 
   - `Atualizar`: Atualizar vídeo através de um PUT para **/videos/{ID}**, onde *{ID}* é o identificador do vídeo, 
-  os novos dados do vídeo devem ser enviados no corpo da requisição.
+  os novos dados do vídeo devem ser enviados no corpo da requisição. Segue abaixo um exemplo do **corpo da requisição**.</br></br>
 
   ```json
     {
       "title": "vídeo xpto atualizado",
       "description": "descrição do vídeo xpto atualizado",
-      "url": "http://www.xptovideos.com/duwehdiwehdhweuhd9487jh82"  
+      "url": "http://www.xpto.com/duwehdiwehdhweuhd9487jh82"  
     }
   ```
 
   - `Deletar`: Deletar vídeo através de um DELETE para **/videos/{ID}**, onde *{ID}* é o identificador da vídeo.
 
 ## :card_file_box: Docker
-- Volume do banco de dados
-  ```
-    docker volume create aluraflix-volume
-  ```
+
 - Container Postgres
   ```
-    docker run -d -p 5432:5432 --name aluraflix-db -e POSTGRES_PASSWORD=1234 -e POSTGRES_DB=aluraflix-db -v aluraflix-volume:/var/lib/postgresql/data postgres
+    docker-compose -f stack.yml up -d
   ```
 
 ## :toolbox: Tecnologias
@@ -109,3 +106,12 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
 - `PostgreSQL`
 - `Flyway`
 - `Lombok`
+- `Mockito`
+- `Testes de Unidade`
+
+## :gear: Atualizações futuras
+- [ ] CRUD de Categorias dos vídeos.
+- [ ] Relacionamento entre categorias e vídeos.
+- [ ] Swagger/OpenApi para uma melhor documentação da api.
+- [ ] HATEOAS para ajudar os clientes a consumirem a API sem a necessidade de conhecimento prévio.
+- [ ] Testes de Integração.

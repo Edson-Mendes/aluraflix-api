@@ -1,12 +1,12 @@
-# Datasource
+# datasource
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/aluraflix-db
-    username: ${DB_USERNAME_DEV}
-    password: ${DB_PASSWORD_DEV}
+    username: user
+    password: 1234
     driver-class-name: org.postgresql.Driver
 
-  # jpa
+# jpa
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
