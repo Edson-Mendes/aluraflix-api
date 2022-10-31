@@ -1,7 +1,7 @@
 package com.emendes.aluraflixapi.handler;
 
 import com.emendes.aluraflixapi.dto.response.ExceptionDetails;
-import com.emendes.aluraflixapi.exception.VideoNotFoundException;
+import com.emendes.aluraflixapi.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class ResourceNotFoundExceptionHandler {
 
-  @ExceptionHandler(VideoNotFoundException.class)
-  public ResponseEntity<ExceptionDetails> handleResourceNotFound(VideoNotFoundException exception, HttpServletRequest request) {
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ExceptionDetails> handleResourceNotFound(NotFoundException exception, HttpServletRequest request) {
     ExceptionDetails details = ExceptionDetails.builder()
         .status(HttpStatus.NOT_FOUND.value())
         .title("Resource not found")
