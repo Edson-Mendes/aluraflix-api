@@ -15,7 +15,7 @@ public class CategoryResponse {
 
   private Integer id;
   private String title;
-  private String cor;
+  private String color;
 
   @Override
   public boolean equals(Object o) {
@@ -26,14 +26,14 @@ public class CategoryResponse {
 
     if (!Objects.equals(id, that.id)) return false;
     if (!Objects.equals(title, that.title)) return false;
-    return Objects.equals(cor, that.cor);
+    return Objects.equals(color, that.color);
   }
 
   @Override
   public int hashCode() {
     int result = id != null ? id.hashCode() : 0;
     result = 31 * result + (title != null ? title.hashCode() : 0);
-    result = 31 * result + (cor != null ? cor.hashCode() : 0);
+    result = 31 * result + (color != null ? color.hashCode() : 0);
     return result;
   }
 
