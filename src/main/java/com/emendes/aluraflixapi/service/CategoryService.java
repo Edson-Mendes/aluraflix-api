@@ -30,11 +30,6 @@ public class CategoryService {
     return mapper.map(findCategoryById(id), CategoryResponse.class);
   }
 
-  private Category findCategoryById(int id) {
-    return categoryRepository.findById(id)
-        .orElseThrow(() -> new CategoryNotFoundException("Category not found for id: " + id));
-  }
-
   public CategoryResponse create(CategoryRequest categoryRequest) {
     Category categoryToBeSaved = mapper.map(categoryRequest, Category.class);
     categoryToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
@@ -50,4 +45,15 @@ public class CategoryService {
 
     return mapper.map(categoryRepository.save(categoryToBeUpdated), CategoryResponse.class);
   }
+
+  public void delete(int id) {
+    Category category = findCategoryById(id);
+    categoryRepository.delete(category);
+  }
+
+  private Category findCategoryById(int id) {
+    return categoryRepository.findById(id)
+        .orElseThrow(() -> new CategoryNotFoundException("Category not found for id: " + id));
+  }
+
 }
