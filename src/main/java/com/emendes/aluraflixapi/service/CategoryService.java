@@ -32,7 +32,7 @@ public class CategoryService {
 
   private Category findCategoryById(int id) {
     return categoryRepository.findById(id)
-        .orElseThrow(() -> new CategoryNotFoundException("Video not found for id: " + id));
+        .orElseThrow(() -> new CategoryNotFoundException("Category not found for id: " + id));
   }
 
   public CategoryResponse create(CategoryRequest categoryRequest) {
@@ -42,4 +42,12 @@ public class CategoryService {
     return mapper.map(categoryRepository.save(categoryToBeSaved), CategoryResponse.class);
   }
 
+  public CategoryResponse update(int id, CategoryRequest categoryRequest) {
+    Category categoryToBeUpdated = findCategoryById(id);
+
+    categoryToBeUpdated.setTitle(categoryRequest.getTitle());
+    categoryToBeUpdated.setColor(categoryRequest.getColor());
+
+    return mapper.map(categoryRepository.save(categoryToBeUpdated), CategoryResponse.class);
+  }
 }
