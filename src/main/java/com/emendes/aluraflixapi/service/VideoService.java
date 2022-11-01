@@ -3,6 +3,7 @@ package com.emendes.aluraflixapi.service;
 import com.emendes.aluraflixapi.dto.request.VideoRequest;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.VideoNotFoundException;
+import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.model.entity.Video;
 import com.emendes.aluraflixapi.repository.VideoRepository;
 import lombok.AllArgsConstructor;
@@ -34,9 +35,15 @@ public class VideoService {
     Video videoToBeSaved = mapper.map(videoRequest, Video.class);
     videoToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
+//  TODO: Pensar/pesquisar se é necessário verificar no DB se existe uma categoria com id = 1.
+    if (videoToBeSaved.getCategory() == null) {
+      videoToBeSaved.setCategory(new Category(1));
+    }
+
     return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
   }
 
+//  TODO: Criar VideoUpdateRequest para que categoryId seja OBRIGATÓRIO ao ATUALIZAR um vídeo
   public VideoResponse update(long id, VideoRequest videoRequest) {
     Video videoToBeUpdated = findVideoById(id);
 
@@ -56,4 +63,5 @@ public class VideoService {
     return videoRepository.findById(id)
         .orElseThrow(() -> new VideoNotFoundException("Video not found for id: " + id));
   }
+
 }

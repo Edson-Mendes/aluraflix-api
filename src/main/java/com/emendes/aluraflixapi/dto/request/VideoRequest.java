@@ -27,6 +27,8 @@ public class VideoRequest {
   @URL(message = "must be a well-formed url")
   private String url;
 
+  private Integer categoryId;
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

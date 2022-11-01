@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 public class DataIntegrityViolationExceptionHandler {
 
 //  TODO: Pesquisar como devolver uma mensagem mais amigável para o cliente.
+//  Aqui esta caindo caso de qualquer problema de integridade no banco de dados, campos nulos,
+//  unique constraints e foreign key inválida!
   @ExceptionHandler(DataIntegrityViolationException.class)
   public ResponseEntity<ExceptionDetails> handleDataIntegrityViolation(
       DataIntegrityViolationException exception, HttpServletRequest request) {

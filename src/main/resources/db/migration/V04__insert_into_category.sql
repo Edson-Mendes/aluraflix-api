@@ -1,0 +1,1 @@
+INSERT INTO tb_category (id, title, color, created_at) VALUES (1, 'Livre', '00a000', '2022-11-01 12:00:00');

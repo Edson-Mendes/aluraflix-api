@@ -17,6 +17,7 @@ public class VideoResponse {
   private String title;
   private String description;
   private String url;
+  private Integer categoryId;
 
   @Override
   public boolean equals(Object o) {

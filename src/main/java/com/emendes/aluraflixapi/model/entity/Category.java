@@ -1,9 +1,6 @@
 package com.emendes.aluraflixapi.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity(name = "tb_category")
 public class Category {
 
@@ -24,5 +22,9 @@ public class Category {
   private String color;
   @Column(nullable = false)
   private LocalDateTime createdAt;
+
+  public Category(Integer id) {
+    this.id = id;
+  }
 
 }

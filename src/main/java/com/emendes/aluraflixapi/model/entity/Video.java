@@ -1,9 +1,6 @@
 package com.emendes.aluraflixapi.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +10,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity(name = "tb_video")
 public class Video {
 
@@ -27,6 +25,9 @@ public class Video {
   private String url;
   @Column(nullable = false)
   private LocalDateTime createdAt;
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  private Category category;
 
   @Override
   public boolean equals(Object o) {
