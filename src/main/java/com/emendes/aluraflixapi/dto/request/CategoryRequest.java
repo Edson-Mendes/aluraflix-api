@@ -1,5 +1,6 @@
 package com.emendes.aluraflixapi.dto.request;
 
+import com.emendes.aluraflixapi.validation.annotation.Hexadecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -16,9 +17,10 @@ public class CategoryRequest {
   @NotBlank(message = "title must not be null or blank")
   @Size(max = 50, message = "title must be maximum {max} characters long")
   private String title;
-//  TODO: Criar uma anotation para validar a cor no formato #00000000 a #ffffffff.
   @NotBlank(message = "color must not be null or blank")
-  private String color;
+  @Size(min = 6, max = 6, message = "color must be {max} characters long")
+  @Hexadecimal
+  private String color; // As validações permitem valores "000000" até "ffffff".
 
   @Override
   public boolean equals(Object o) {

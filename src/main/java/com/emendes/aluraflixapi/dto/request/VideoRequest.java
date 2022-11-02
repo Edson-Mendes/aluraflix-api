@@ -1,30 +1,32 @@
 package com.emendes.aluraflixapi.dto.request;
 
+import com.emendes.aluraflixapi.dto.request.groups.CreateInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
 @ToString
-public class VideoRequest {
+public class VideoCreateRequest {
 
-  @NotBlank(message = "title must not be null or blank")
-  @Size(max = 100, message = "title must be maximum {max} characters long")
+  @NotBlank(message = "title must not be null or blank", groups = {CreateInfo.class})
+  @Size(max = 100, message = "title must be maximum {max} characters long", groups = {CreateInfo.class})
   private String title;
 
-  @Size(max = 255, message = "description must be maximum {max} characters long")
-  @NotBlank(message = "description must not be null or blank")
+  @Size(max = 255, message = "description must be maximum {max} characters long", groups = {CreateInfo.class})
+  @NotBlank(message = "description must not be null or blank", groups = {CreateInfo.class})
   private String description;
 
-  @Size(max = 255, message = "url must be maximum {max} characters long")
-  @NotBlank(message = "url must not be null or blank")
-  @URL(message = "must be a well-formed url")
+  @Size(max = 255, message = "url must be maximum {max} characters long", groups = {CreateInfo.class})
+  @NotBlank(message = "url must not be null or blank", groups = {CreateInfo.class})
+  @URL(message = "must be a well-formed url", groups = {CreateInfo.class})
   private String url;
 
   private Integer categoryId;
@@ -34,7 +36,7 @@ public class VideoRequest {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    VideoRequest that = (VideoRequest) o;
+    VideoCreateRequest that = (VideoCreateRequest) o;
 
     if (!Objects.equals(title, that.title)) return false;
     if (!Objects.equals(description, that.description)) return false;
