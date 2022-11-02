@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Entity(name = "tb_category")
+@Entity
+@Table(name = "tb_category")
 public class Category {
 
   @Id
@@ -22,6 +23,8 @@ public class Category {
   private String color;
   @Column(nullable = false)
   private LocalDateTime createdAt;
+  private LocalDateTime deletedAt;
+  private boolean enabled;
 
   public Category(Integer id) {
     this.id = id;

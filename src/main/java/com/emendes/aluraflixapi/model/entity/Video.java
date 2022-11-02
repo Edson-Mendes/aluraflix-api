@@ -10,8 +10,8 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Entity(name = "tb_video")
+@Entity
+@Table(name = "tb_video")
 public class Video {
 
   @Id

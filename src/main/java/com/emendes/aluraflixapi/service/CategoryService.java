@@ -39,7 +39,9 @@ public class CategoryService {
 
   public CategoryResponse create(CategoryRequest categoryRequest) {
     Category categoryToBeSaved = mapper.map(categoryRequest, Category.class);
+
     categoryToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+    categoryToBeSaved.setEnabled(true);
 
     return mapper.map(categoryRepository.save(categoryToBeSaved), CategoryResponse.class);
   }
@@ -55,7 +57,11 @@ public class CategoryService {
 
   public void delete(int id) {
     Category category = findCategoryById(id);
-    categoryRepository.delete(category);
+
+    category.setEnabled(false);
+    category.setDeletedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+
+    categoryRepository.save(category);
   }
 
   private Category findCategoryById(int id) {
