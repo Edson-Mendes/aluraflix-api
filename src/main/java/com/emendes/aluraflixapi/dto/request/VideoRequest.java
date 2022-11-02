@@ -1,6 +1,7 @@
 package com.emendes.aluraflixapi.dto.request;
 
 import com.emendes.aluraflixapi.dto.request.groups.CreateInfo;
+import com.emendes.aluraflixapi.dto.request.groups.UpdateInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @ToString
-public class VideoCreateRequest {
+public class VideoRequest {
 
   @NotBlank(message = "title must not be null or blank", groups = {CreateInfo.class})
   @Size(max = 100, message = "title must be maximum {max} characters long", groups = {CreateInfo.class})
@@ -29,6 +30,7 @@ public class VideoCreateRequest {
   @URL(message = "must be a well-formed url", groups = {CreateInfo.class})
   private String url;
 
+  @NotNull(message = "categoryId must not be null", groups = {UpdateInfo.class})
   private Integer categoryId;
 
   @Override
@@ -36,7 +38,7 @@ public class VideoCreateRequest {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    VideoCreateRequest that = (VideoCreateRequest) o;
+    VideoRequest that = (VideoRequest) o;
 
     if (!Objects.equals(title, that.title)) return false;
     if (!Objects.equals(description, that.description)) return false;

@@ -53,13 +53,13 @@ public class VideoService {
     return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
   }
 
-//  TODO: Criar VideoUpdateRequest para que categoryId seja OBRIGATÓRIO ao ATUALIZAR um vídeo
   public VideoResponse update(long id, VideoRequest videoRequest) {
     Video videoToBeUpdated = findVideoById(id);
 
     videoToBeUpdated.setTitle(videoRequest.getTitle());
     videoToBeUpdated.setDescription(videoRequest.getDescription());
     videoToBeUpdated.setUrl(videoRequest.getUrl());
+    videoToBeUpdated.setCategory(new Category(videoRequest.getCategoryId()));
 
     return mapper.map(videoRepository.save(videoToBeUpdated), VideoResponse.class);
   }

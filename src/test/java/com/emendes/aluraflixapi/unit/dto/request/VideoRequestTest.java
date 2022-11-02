@@ -14,7 +14,7 @@ import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
 
-@DisplayName("Unit tests for VideoRequest")
+@DisplayName("Unit tests for VideoCreateRequest")
 class VideoRequestTest {
 
   private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
