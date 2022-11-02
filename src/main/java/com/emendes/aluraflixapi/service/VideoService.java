@@ -31,6 +31,11 @@ public class VideoService {
     return mapper.map(findVideoById(id), VideoResponse.class);
   }
 
+  public Page<VideoResponse> findByTitle(String title, Pageable pageable) {
+    return videoRepository.findByTitleIgnoreCaseContaining(title, pageable)
+        .map(v -> mapper.map(v, VideoResponse.class));
+  }
+
   protected Page<VideoResponse> findByCategory(Category category, Pageable pageable) {
     return videoRepository.findByCategory(category, pageable)
         .map(v -> mapper.map(v, VideoResponse.class));

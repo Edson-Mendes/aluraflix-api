@@ -4,6 +4,7 @@ import com.emendes.aluraflixapi.dto.request.VideoRequest;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.service.VideoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/videos")
@@ -23,8 +25,17 @@ public class VideoController {
   private final VideoService videoService;
 
   @GetMapping
-  public Page<VideoResponse> findAll(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-    return videoService.findAll(pageable);
+  public ResponseEntity<Page<VideoResponse>> findAll(
+      @RequestParam(name = "search", required = false) String title,
+      @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+    Page<VideoResponse> pageVideoResponse;
+    log.info(title);
+    if(title == null) {
+      pageVideoResponse = videoService.findAll(pageable);
+    } else {
+      pageVideoResponse = videoService.findByTitle(title, pageable);
+    }
+    return ResponseEntity.ok(pageVideoResponse);
   }
 
   @GetMapping("/{id}")
