@@ -52,7 +52,7 @@ class VideoServiceTest {
     BDDMockito.when(videoRepositoryMock.findById(1000L)).thenReturn(Optional.of(video));
 
     BDDMockito.when(mapperMock
-            .map(new VideoRequest("title xpto", "description xpto", "http://www.sitexpto.com"), Video.class))
+            .map(new VideoRequest("title xpto", "description xpto", "http://www.sitexpto.com", 1), Video.class))
         .thenReturn(videoWithoutId);
     BDDMockito.when(videoRepositoryMock.save(videoWithoutId)).thenReturn(video);
 
@@ -102,7 +102,7 @@ class VideoServiceTest {
 
       VideoResponse expectedVideoResponse = new VideoResponse(
           1000L, "title xpto",
-          "description xpto", "http://www.sitexpto.com");
+          "description xpto", "http://www.sitexpto.com", 1);
 
       Assertions.assertThat(actualVideoResponse)
           .isNotNull().isEqualTo(expectedVideoResponse);
@@ -126,7 +126,7 @@ class VideoServiceTest {
     @DisplayName("create must return VideoResponse when create successfully")
     void create_MustReturnVideoResponse_WhenCreateSuccessfully() {
       VideoRequest videoRequest = new VideoRequest(
-          "title xpto", "description xpto", "http://www.sitexpto.com");
+          "title xpto", "description xpto", "http://www.sitexpto.com", 1);
 
       VideoResponse actualVideoResponse = videoService.create(videoRequest);
 
@@ -146,7 +146,7 @@ class VideoServiceTest {
     @DisplayName("update must return VideoResponse when update successfully")
     void update_MustReturnVideoResponse_WhenUpdateSuccessfully() {
       VideoRequest videoRequest = new VideoRequest(
-          "title xpto updated", "description xpto updated", "http://www.sitexpto.com");
+          "title xpto updated", "description xpto updated", "http://www.sitexpto.com", 1);
       Video video = VideoCreator.from(1000L, videoRequest);
       BDDMockito.when(videoRepositoryMock.save(video)).thenReturn(video);
       BDDMockito.when(mapperMock.map(video, VideoResponse.class)).thenReturn(VideoResponseCreator.fromVideo(video));
@@ -163,7 +163,7 @@ class VideoServiceTest {
     @DisplayName("update must throws VideoNotFoundException when id does not exist")
     void update_MustThrowsVideoNotFoundException_WhenIdDoesNotExist() {
       VideoRequest videoRequest = new VideoRequest(
-          "title xpto updated", "description xpto updated", "http://www.sitexpto.com");
+          "title xpto updated", "description xpto updated", "http://www.sitexpto.com", 1);
 
       Assertions.assertThatExceptionOfType(VideoNotFoundException.class)
           .isThrownBy(() -> videoService.update(9999L, videoRequest))

@@ -2,6 +2,7 @@ package com.emendes.aluraflixapi.service;
 
 import com.emendes.aluraflixapi.dto.request.CategoryRequest;
 import com.emendes.aluraflixapi.dto.response.CategoryResponse;
+import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.repository.CategoryRepository;
@@ -19,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 public class CategoryService {
 
   private final CategoryRepository categoryRepository;
+  private final VideoService videoService;
   private final ModelMapper mapper;
 
   public Page<CategoryResponse> findAll(Pageable pageable) {
@@ -28,6 +30,11 @@ public class CategoryService {
 
   public CategoryResponse findById(int id) {
     return mapper.map(findCategoryById(id), CategoryResponse.class);
+  }
+
+  public Page<VideoResponse> findVideosByCategoryId(int id, Pageable pageable) {
+    Category category = findCategoryById(id);
+    return videoService.findByCategory(category, pageable);
   }
 
   public CategoryResponse create(CategoryRequest categoryRequest) {

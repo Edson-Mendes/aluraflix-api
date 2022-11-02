@@ -2,6 +2,7 @@ package com.emendes.aluraflixapi.controller;
 
 import com.emendes.aluraflixapi.dto.request.CategoryRequest;
 import com.emendes.aluraflixapi.dto.response.CategoryResponse;
+import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,12 @@ public class CategoryController {
   @GetMapping("/{id}")
   public ResponseEntity<CategoryResponse> findById(@PathVariable(name = "id") int id) {
     return ResponseEntity.ok(categoryService.findById(id));
+  }
+
+  @GetMapping("/{id}/videos")
+  public ResponseEntity<Page<VideoResponse>> findVideosByCategory(
+      @PathVariable(name = "id") int id, @PageableDefault(sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+    return ResponseEntity.ok(categoryService.findVideosByCategoryId(id, pageable));
   }
 
   @PostMapping

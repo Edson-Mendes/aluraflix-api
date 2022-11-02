@@ -31,6 +31,11 @@ public class VideoService {
     return mapper.map(findVideoById(id), VideoResponse.class);
   }
 
+  protected Page<VideoResponse> findByCategory(Category category, Pageable pageable) {
+    return videoRepository.findByCategory(category, pageable)
+        .map(v -> mapper.map(v, VideoResponse.class));
+  }
+
   public VideoResponse create(VideoRequest videoRequest) {
     Video videoToBeSaved = mapper.map(videoRequest, Video.class);
     videoToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
