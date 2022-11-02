@@ -41,6 +41,7 @@ public class VideoService {
         .map(v -> mapper.map(v, VideoResponse.class));
   }
 
+//  TODO: Impedir do cliente criar um vídeo com uma categoria deletada
   public VideoResponse create(VideoRequest videoRequest) {
     Video videoToBeSaved = mapper.map(videoRequest, Video.class);
     videoToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));

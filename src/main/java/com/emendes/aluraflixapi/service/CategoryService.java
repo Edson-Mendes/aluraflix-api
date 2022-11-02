@@ -46,6 +46,7 @@ public class CategoryService {
     return mapper.map(categoryRepository.save(categoryToBeSaved), CategoryResponse.class);
   }
 
+//  TODO: Impedir do cliente atualizar a Categoria 'Livre'
   public CategoryResponse update(int id, CategoryRequest categoryRequest) {
     Category categoryToBeUpdated = findCategoryById(id);
 
@@ -55,6 +56,8 @@ public class CategoryService {
     return mapper.map(categoryRepository.save(categoryToBeUpdated), CategoryResponse.class);
   }
 
+//  TODO: Pensar/Pesquisar o que fazer com os vídeos associados a categoria deletada.
+//  TODO: Impedir do cliente deletar a Categoria 'Livre'
   public void delete(int id) {
     Category category = findCategoryById(id);
 
