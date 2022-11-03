@@ -36,7 +36,7 @@ public class VideoService {
         .map(v -> mapper.map(v, VideoResponse.class));
   }
 
-  protected Page<VideoResponse> findByCategory(Category category, Pageable pageable) {
+  public Page<VideoResponse> findByCategory(Category category, Pageable pageable) {
     return videoRepository.findByCategory(category, pageable)
         .map(v -> mapper.map(v, VideoResponse.class));
   }
