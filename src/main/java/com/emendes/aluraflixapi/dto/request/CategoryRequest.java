@@ -19,7 +19,7 @@ public class CategoryRequest {
   private String title;
   @NotBlank(message = "color must not be null or blank")
   @Size(min = 6, max = 6, message = "color must be {max} characters long")
-  @Hexadecimal
+  @Hexadecimal(message = "color must be a valid hexadecimal")
   private String color; // As validações permitem valores "000000" até "ffffff".
 
   @Override
