@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -62,7 +63,7 @@ class VideoServiceTest {
                 Video.class))
         .thenReturn(videoWithoutId);
 
-    BDDMockito.when(videoRepositoryMock.save(videoWithoutId)).thenReturn(video);
+    BDDMockito.when(videoRepositoryMock.save(ArgumentMatchers.any(Video.class))).thenReturn(video);
 
     BDDMockito.willThrow(new VideoNotFoundException("Video not found for id: " + nonExistentId))
         .given(videoRepositoryMock).findById(nonExistentId);

@@ -44,13 +44,12 @@ public class VideoService {
       throw new CategoryNotFoundException("Category not found for id: " + videoRequest.getCategoryId());
     }
 
-    Video videoToBeSaved = mapper.map(videoRequest, Video.class);
-    videoToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+    Video videoToBeSaved = videoRequestToVideo(videoRequest);
 
     return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
   }
 
-//  TODO: Impedir do cliente atualizar um vídeo com uma categoria deletada
+  //  TODO: Impedir do cliente atualizar um vídeo com uma categoria deletada
   public VideoResponse update(long id, VideoRequest videoRequest) {
     Video videoToBeUpdated = findVideoById(id);
 
@@ -70,6 +69,17 @@ public class VideoService {
   private Video findVideoById(long id) {
     return videoRepository.findById(id)
         .orElseThrow(() -> new VideoNotFoundException("Video not found for id: " + id));
+  }
+
+  private Video videoRequestToVideo(VideoRequest videoRequest) {
+    return Video.builder()
+        .id(null)
+        .title(videoRequest.getTitle())
+        .description(videoRequest.getDescription())
+        .url(videoRequest.getUrl())
+        .category(new Category(videoRequest.getCategoryId()))
+        .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
+        .build();
   }
 
 }
