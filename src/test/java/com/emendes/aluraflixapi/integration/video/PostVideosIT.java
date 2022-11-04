@@ -1,6 +1,7 @@
 package com.emendes.aluraflixapi.integration.video;
 
 import com.emendes.aluraflixapi.dto.request.VideoRequest;
+import com.emendes.aluraflixapi.dto.response.ExceptionDetails;
 import com.emendes.aluraflixapi.dto.response.ValidationExceptionDetails;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import org.assertj.core.api.Assertions;
@@ -21,7 +22,7 @@ import org.springframework.test.context.jdbc.Sql;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@DisplayName("Integration tests for GET /videos")
+@DisplayName("Integration tests for POST /videos")
 class PostVideosIT {
 
   @Autowired
@@ -31,7 +32,7 @@ class PostVideosIT {
 
   @Test
   @Sql(scripts = {"/category/insert.sql"})
-  @DisplayName("postVideos must return 201 and VideoResponse when create successfully")
+  @DisplayName("post /videos must return 201 and VideoResponse when create successfully")
   void postVideos_MustReturn201AndVideoResponse_WhenCreateSuccessfully() {
     VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum", "Descrição xpto sobre o vídeo",
         "http://www.xpto.com/fe23ac5", 2);
@@ -51,7 +52,7 @@ class PostVideosIT {
   }
 
   @Test
-  @DisplayName("postVideos must return 201 and VideoResponse when send null categoryId")
+  @DisplayName("post /videos must return 201 and VideoResponse when send null categoryId")
   void postVideos_MustReturn201AndVideoResponse_WhenSendNullCategoryId() {
     VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum", "Descrição xpto sobre o vídeo",
         "http://www.xpto.com/fe23ac5", null);
@@ -71,8 +72,8 @@ class PostVideosIT {
   }
 
   @Test
-  @DisplayName("postVideo must return 400 and ValidationExceptionDetails when request body has invalid fields")
-  void postVideo_MustReturn400AndValidationExceptionDetails_WhenRequestBodyHasInvalidFields() {
+  @DisplayName("post /videos must return 400 and ValidationExceptionDetails when request body has invalid fields")
+  void postVideos_MustReturn400AndValidationExceptionDetails_WhenRequestBodyHasInvalidFields() {
     VideoRequest videoRequest = new VideoRequest("", null,
         "http://www.xpto.com/fe23ac5", 1);
     HttpEntity<VideoRequest> requestEntity = new HttpEntity<>(videoRequest);
@@ -94,17 +95,17 @@ class PostVideosIT {
 
   @Test
   @Sql(scripts = {"/category/insert.sql"})
-  @DisplayName("postVideo must return 400 and ExceptionDetails when categoryId references deleted Category")
-  void postVideo_MustReturn400AndExceptionDetails_WhenCategoryIdReferencesDeletedCategory() {
+  @DisplayName("post /videos must return 400 and ExceptionDetails when categoryId references deleted Category")
+  void postVideos_MustReturn400AndExceptionDetails_WhenCategoryIdReferencesDeletedCategory() {
     VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum", "Descrição xpto sobre o vídeo",
         "http://www.xpto.com/fe23ac5", 100);
     HttpEntity<VideoRequest> requestEntity = new HttpEntity<>(videoRequest);
 
-    ResponseEntity<ValidationExceptionDetails> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplate.exchange(
         VIDEOS_URI, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<>() {});
 
     HttpStatus actualStatus = responseEntity.getStatusCode();
-    ValidationExceptionDetails actualBody = responseEntity.getBody();
+    ExceptionDetails actualBody = responseEntity.getBody();
 
     Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
     Assertions.assertThat(actualBody).isNotNull();

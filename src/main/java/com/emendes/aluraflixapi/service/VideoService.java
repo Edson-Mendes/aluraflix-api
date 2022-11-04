@@ -54,6 +54,7 @@ public class VideoService {
     return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
   }
 
+//  TODO: Impedir do cliente atualizar um vídeo com uma categoria deletada
   public VideoResponse update(long id, VideoRequest videoRequest) {
     Video videoToBeUpdated = findVideoById(id);
 
