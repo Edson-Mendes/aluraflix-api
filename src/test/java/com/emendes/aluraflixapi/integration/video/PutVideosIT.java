@@ -35,7 +35,7 @@ class PutVideosIT {
   @Test
   @Sql(scripts = {"/video/insert.sql"})
   @DisplayName("put /videos/{id} must return 200 and VideoResponse when update successfully")
-  void putVideosId_MustReturn201AndVideoResponse_WhenCreateSuccessfully() {
+  void putVideosId_MustReturn200AndVideoResponse_WhenUpdateSuccessfully() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, 1);
     VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum update",
         "Descrição xpto sobre o vídeo update", "http://www.xpto.com/fe23ac5", 1);
