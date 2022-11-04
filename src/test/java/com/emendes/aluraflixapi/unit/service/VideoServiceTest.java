@@ -109,7 +109,7 @@ class VideoServiceTest {
 
       VideoResponse expectedVideoResponse = new VideoResponse(
           1000L, "title xpto",
-          "description xpto", "http://www.sitexpto.com", 1);
+          "description xpto", "http://www.sitexpto.com", 200);
 
       Assertions.assertThat(actualVideoResponse)
           .isNotNull().isEqualTo(expectedVideoResponse);
@@ -138,7 +138,7 @@ class VideoServiceTest {
       Page<VideoResponse> actualVideoResponsePage = videoService.findByTitle("xpto", DEFAULT_PAGEABLE);
 
       VideoResponse expectedVideoResponse = new VideoResponse(
-          1000L, "title xpto", "description xpto", "http://www.sitexpto.com", 1);
+          1000L, "title xpto", "description xpto", "http://www.sitexpto.com", 200);
       Assertions.assertThat(actualVideoResponsePage)
           .isNotEmpty()
           .hasSize(1)

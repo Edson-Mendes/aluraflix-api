@@ -53,4 +53,14 @@ public class Video {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return "Video{" +
+        "id=" + id +
+        ", title='" + title + '\'' +
+        ", description='" + description + '\'' +
+        ", url='" + url + '\'' +
+        ", createdAt=" + createdAt +
+        '}';
+  }
 }

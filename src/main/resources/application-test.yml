@@ -1,0 +1,21 @@
+# datasource
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:11.1:///aluraflix-db
+
+# jpa
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+
+# log
+logging:
+  level:
+    org:
+      hibernate:
+        sql: DEBUG
+        type: trace
