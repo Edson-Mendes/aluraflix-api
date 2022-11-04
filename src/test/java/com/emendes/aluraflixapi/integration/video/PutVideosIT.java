@@ -118,7 +118,7 @@ class PutVideosIT {
   }
 
   @Test
-  @Sql(scripts = {"/category/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/video/insert.sql"})
   @DisplayName("put /videos/{id} must return 400 and ExceptionDetails when categoryId references deleted Category")
   void putVideosId_MustReturn400AndExceptionDetails_WhenCategoryIdReferencesDeletedCategory() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, 1);

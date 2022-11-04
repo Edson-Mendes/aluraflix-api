@@ -2,6 +2,7 @@ package com.emendes.aluraflixapi.service;
 
 import com.emendes.aluraflixapi.dto.request.VideoRequest;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
+import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.exception.VideoNotFoundException;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.model.entity.Video;
@@ -20,6 +21,8 @@ import java.time.temporal.ChronoUnit;
 public class VideoService {
 
   private final VideoRepository videoRepository;
+
+  private final CategoryService categoryService;
   private final ModelMapper mapper;
 
   public Page<VideoResponse> findAll(Pageable pageable) {
@@ -36,20 +39,13 @@ public class VideoService {
         .map(v -> mapper.map(v, VideoResponse.class));
   }
 
-  public Page<VideoResponse> findByCategory(Category category, Pageable pageable) {
-    return videoRepository.findByCategory(category, pageable)
-        .map(v -> mapper.map(v, VideoResponse.class));
-  }
-
-//  TODO: Impedir do cliente criar um vídeo com uma categoria deletada
   public VideoResponse create(VideoRequest videoRequest) {
+    if (!categoryService.existsEnabledCategoryWithId(videoRequest.getCategoryId())) {
+      throw new CategoryNotFoundException("Category not found for id: " + videoRequest.getCategoryId());
+    }
+
     Video videoToBeSaved = mapper.map(videoRequest, Video.class);
     videoToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-
-//  TODO: Pensar/pesquisar se é necessário verificar no DB se existe uma categoria com id = 1.
-    if (videoToBeSaved.getCategory() == null) {
-      videoToBeSaved.setCategory(new Category(1));
-    }
 
     return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
   }

@@ -2,7 +2,6 @@ package com.emendes.aluraflixapi.util.creator;
 
 import com.emendes.aluraflixapi.dto.request.CategoryRequest;
 import com.emendes.aluraflixapi.model.entity.Category;
-import com.emendes.aluraflixapi.model.entity.Video;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +18,7 @@ public class CategoryCreator {
 
   public static Category withAllParameters() {
     LocalDateTime created_at = LocalDateTime.parse("2022-11-03T10:00:00");
-    return new Category(200, "Terror xpto", "f1f1f1", created_at, null, true);
+    return new Category(100, "Terror xpto", "f1f1f1", created_at, null, true);
   }
 
   public static Category withoutId() {

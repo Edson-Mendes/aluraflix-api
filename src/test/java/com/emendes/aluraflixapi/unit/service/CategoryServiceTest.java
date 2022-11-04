@@ -6,10 +6,11 @@ import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.repository.CategoryRepository;
+import com.emendes.aluraflixapi.repository.VideoRepository;
 import com.emendes.aluraflixapi.service.CategoryService;
-import com.emendes.aluraflixapi.service.VideoService;
 import com.emendes.aluraflixapi.util.creator.CategoryCreator;
 import com.emendes.aluraflixapi.util.creator.CategoryResponseCreator;
+import com.emendes.aluraflixapi.util.creator.VideoCreator;
 import com.emendes.aluraflixapi.util.creator.VideoResponseCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +42,7 @@ class CategoryServiceTest {
   @Mock
   private ModelMapper mapperMock;
   @Mock
-  private VideoService videoServiceMock;
+  private VideoRepository videoRepositoryMock;
 
   private final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.Direction.ASC, "title");
 
@@ -57,8 +58,8 @@ class CategoryServiceTest {
     BDDMockito.when(mapperMock.map(CategoryCreator.withAllParameters(), CategoryResponse.class))
         .thenReturn(CategoryResponseCreator.fromCategory(CategoryCreator.withAllParameters()));
 
-    BDDMockito.when(videoServiceMock.findByCategory(CategoryCreator.withAllParameters(), DEFAULT_PAGEABLE))
-        .thenReturn(VideoResponseCreator.videoResponsePage(DEFAULT_PAGEABLE));
+    BDDMockito.when(videoRepositoryMock.findByCategory(CategoryCreator.withAllParameters(), DEFAULT_PAGEABLE))
+        .thenReturn(VideoCreator.videosPage(DEFAULT_PAGEABLE));
   }
 
   @Nested
@@ -73,7 +74,7 @@ class CategoryServiceTest {
 
       Page<CategoryResponse> actualCategoryResponsePage = categoryService.findAll(DEFAULT_PAGEABLE);
 
-      CategoryResponse expectedCategoryResponse = new CategoryResponse(200, "Terror xpto", "f1f1f1");
+      CategoryResponse expectedCategoryResponse = new CategoryResponse(100, "Terror xpto", "f1f1f1");
       Assertions.assertThat(actualCategoryResponsePage)
           .isNotEmpty()
           .hasSize(1)
@@ -103,7 +104,7 @@ class CategoryServiceTest {
     void findById_MustReturnCategoryResponse_WhenFoundByIdSuccessfully() {
       CategoryResponse actualCategoryResponse = categoryService.findById(100);
 
-      CategoryResponse expectedCategoryResponse = new CategoryResponse(200, "Terror xpto", "f1f1f1");
+      CategoryResponse expectedCategoryResponse = new CategoryResponse(100, "Terror xpto", "f1f1f1");
 
       Assertions.assertThat(actualCategoryResponse)
           .isNotNull().isEqualTo(expectedCategoryResponse);
@@ -126,6 +127,8 @@ class CategoryServiceTest {
     @Test
     @DisplayName("findVideosByCategoryId must return Page<VideoResponse> when found videos by categoryId successfully")
     void findVideosByCategoryId_MustReturnPageVideoResponse_WhenFoundVideosByCategoryIdSuccessfully() {
+      BDDMockito.when(mapperMock.map(VideoCreator.withAllParameters(), VideoResponse.class))
+          .thenReturn(VideoResponseCreator.fromVideo(VideoCreator.withAllParameters()));
       Page<VideoResponse> actualVideoResponsePage = categoryService.findVideosByCategoryId(100, DEFAULT_PAGEABLE);
 
       VideoResponse expectedVideoResponse = new VideoResponse(

@@ -15,7 +15,7 @@ public class VideoCreator {
     LocalDateTime createdAt = LocalDateTime.parse("2022-10-24T10:00:00");
     return new Video(
         1000L, "title xpto",
-        "description xpto", "http://www.sitexpto.com", createdAt, new Category(200));
+        "description xpto", "http://www.sitexpto.com", createdAt, new Category(100));
   }
 
   public static Video withoutId() {

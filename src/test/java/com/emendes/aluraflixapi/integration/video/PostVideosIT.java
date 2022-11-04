@@ -95,8 +95,8 @@ class PostVideosIT {
 
   @Test
   @Sql(scripts = {"/category/insert.sql"})
-  @DisplayName("post /videos must return 400 and ExceptionDetails when categoryId references deleted Category")
-  void postVideos_MustReturn400AndExceptionDetails_WhenCategoryIdReferencesDeletedCategory() {
+  @DisplayName("post /videos must return 404 and ExceptionDetails when categoryId references deleted Category")
+  void postVideos_MustReturn404AndExceptionDetails_WhenCategoryIdReferencesDeletedCategory() {
     VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum", "Descrição xpto sobre o vídeo",
         "http://www.xpto.com/fe23ac5", 100);
     HttpEntity<VideoRequest> requestEntity = new HttpEntity<>(videoRequest);
@@ -107,8 +107,12 @@ class PostVideosIT {
     HttpStatus actualStatus = responseEntity.getStatusCode();
     ExceptionDetails actualBody = responseEntity.getBody();
 
-    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.NOT_FOUND);
     Assertions.assertThat(actualBody).isNotNull();
+    Assertions.assertThat(actualBody.getTitle()).isEqualTo("Resource not found");
+    Assertions.assertThat(actualBody.getStatus()).isEqualTo(404);
+    Assertions.assertThat(actualBody.getDetails()).isEqualTo("Category not found for id: 100");
+    Assertions.assertThat(actualBody.getPath()).isEqualTo("/videos");
   }
 
 }

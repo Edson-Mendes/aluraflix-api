@@ -16,4 +16,5 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
   @Query("SELECT c FROM Category c WHERE c.id = :id AND c.enabled = true")
   Optional<Category> findById(@Param("id") int id);
 
+  boolean existsByIdAndEnabled(Integer id, boolean enabled);
 }

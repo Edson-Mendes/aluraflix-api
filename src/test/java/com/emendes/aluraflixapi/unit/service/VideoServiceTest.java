@@ -2,10 +2,12 @@ package com.emendes.aluraflixapi.unit.service;
 
 import com.emendes.aluraflixapi.dto.request.VideoRequest;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
+import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.exception.VideoNotFoundException;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.model.entity.Video;
 import com.emendes.aluraflixapi.repository.VideoRepository;
+import com.emendes.aluraflixapi.service.CategoryService;
 import com.emendes.aluraflixapi.service.VideoService;
 import com.emendes.aluraflixapi.util.creator.VideoCreator;
 import com.emendes.aluraflixapi.util.creator.VideoResponseCreator;
@@ -36,6 +38,8 @@ class VideoServiceTest {
   private VideoService videoService;
   @Mock
   private VideoRepository videoRepositoryMock;
+  @Mock
+  private CategoryService categoryServiceMock;
   @Mock
   private ModelMapper mapperMock;
 
@@ -109,7 +113,7 @@ class VideoServiceTest {
 
       VideoResponse expectedVideoResponse = new VideoResponse(
           1000L, "title xpto",
-          "description xpto", "http://www.sitexpto.com", 200);
+          "description xpto", "http://www.sitexpto.com", 100);
 
       Assertions.assertThat(actualVideoResponse)
           .isNotNull().isEqualTo(expectedVideoResponse);
@@ -138,7 +142,7 @@ class VideoServiceTest {
       Page<VideoResponse> actualVideoResponsePage = videoService.findByTitle("xpto", DEFAULT_PAGEABLE);
 
       VideoResponse expectedVideoResponse = new VideoResponse(
-          1000L, "title xpto", "description xpto", "http://www.sitexpto.com", 200);
+          1000L, "title xpto", "description xpto", "http://www.sitexpto.com", 100);
       Assertions.assertThat(actualVideoResponsePage)
           .isNotEmpty()
           .hasSize(1)
@@ -160,49 +164,15 @@ class VideoServiceTest {
   }
 
   @Nested
-  @DisplayName("Tests for findByCategory method")
-  class FindByCategoryMethod {
-
-    @Test
-    @DisplayName("findByCategory must return Page<VideoResponse> when found successfully")
-    void findByCategory_MustReturnPageVideoResponse_WhenFoundSuccessfully() {
-      BDDMockito.when(videoRepositoryMock.findByCategory(new Category(200), DEFAULT_PAGEABLE))
-          .thenReturn(VideoCreator.videosPage(DEFAULT_PAGEABLE));
-
-      Page<VideoResponse> actualVideoResponsePage = videoService.findByCategory(new Category(200), DEFAULT_PAGEABLE);
-
-      VideoResponse expectedVideoResponse = new VideoResponse(
-          1000L, "title xpto",
-          "description xpto", "http://www.sitexpto.com", 200);
-      Assertions.assertThat(actualVideoResponsePage)
-          .isNotEmpty()
-          .hasSize(1)
-          .contains(expectedVideoResponse);
-    }
-
-    @Test
-    @DisplayName("findByCategory must return empty Page when not found any video by category")
-    void findByCategory_MustReturnsEmptyPage_WhenThereAreNoVideos() {
-      BDDMockito.when(videoRepositoryMock.findByCategory(new Category(250), DEFAULT_PAGEABLE)) // Mock comportamento.
-          .thenReturn(Page.empty(DEFAULT_PAGEABLE));
-
-      Page<VideoResponse> actualVideoResponsePage = videoService.findByCategory(new Category(250), DEFAULT_PAGEABLE);
-
-      Assertions.assertThat(actualVideoResponsePage)
-          .isEmpty();
-    }
-
-  }
-
-  @Nested
   @DisplayName("Tests for create method")
   class CreateMethod {
 
     @Test
     @DisplayName("create must return VideoResponse when create successfully")
     void create_MustReturnVideoResponse_WhenCreateSuccessfully() {
+      BDDMockito.when(categoryServiceMock.existsEnabledCategoryWithId(100)).thenReturn(true);
       VideoRequest videoRequest = new VideoRequest(
-          "title xpto", "description xpto", "http://www.sitexpto.com", null);
+          "title xpto", "description xpto", "http://www.sitexpto.com", 100);
 
       VideoResponse actualVideoResponse = videoService.create(videoRequest);
 
@@ -210,9 +180,22 @@ class VideoServiceTest {
       Assertions.assertThat(actualVideoResponse.getTitle()).isEqualTo("title xpto");
       Assertions.assertThat(actualVideoResponse.getDescription()).isEqualTo("description xpto");
       Assertions.assertThat(actualVideoResponse.getUrl()).isEqualTo("http://www.sitexpto.com");
-      Assertions.assertThat(actualVideoResponse.getCategoryId()).isEqualTo(200);
+      Assertions.assertThat(actualVideoResponse.getCategoryId()).isEqualTo(100);
     }
 
+    @Test
+    @DisplayName("create must throws CategoryNotFoundException when does not exist enabled category with categoryId")
+    void create_MustThrowsCategoryNotFoundException_WhenDoesNotExistEnabledCategoryWithCategoryId() {
+      BDDMockito.when(categoryServiceMock.existsEnabledCategoryWithId(999)).thenReturn(false);
+      VideoRequest videoRequest = new VideoRequest(
+          "title xpto", "description xpto", "http://www.sitexpto.com", 999);
+
+//      VideoResponse actualVideoResponse = videoService.create(videoRequest);
+
+      Assertions.assertThatExceptionOfType(CategoryNotFoundException.class)
+          .isThrownBy(() -> videoService.create(videoRequest))
+          .withMessage("Category not found for id: 999");
+    }
   }
 
   @Nested

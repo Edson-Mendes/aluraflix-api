@@ -6,6 +6,7 @@ import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.repository.CategoryRepository;
+import com.emendes.aluraflixapi.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ import java.time.temporal.ChronoUnit;
 public class CategoryService {
 
   private final CategoryRepository categoryRepository;
-  private final VideoService videoService;
+  private final VideoRepository videoRepository;
   private final ModelMapper mapper;
 
   public Page<CategoryResponse> findAll(Pageable pageable) {
@@ -34,7 +35,8 @@ public class CategoryService {
 
   public Page<VideoResponse> findVideosByCategoryId(int id, Pageable pageable) {
     Category category = findCategoryById(id);
-    return videoService.findByCategory(category, pageable);
+    return videoRepository.findByCategory(category, pageable)
+        .map(v -> mapper.map(v, VideoResponse.class));
   }
 
   public CategoryResponse create(CategoryRequest categoryRequest) {
@@ -65,6 +67,10 @@ public class CategoryService {
     category.setDeletedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
     categoryRepository.save(category);
+  }
+
+  public boolean existsEnabledCategoryWithId(Integer id) {
+    return categoryRepository.existsByIdAndEnabled(id, true);
   }
 
   private Category findCategoryById(int id) {

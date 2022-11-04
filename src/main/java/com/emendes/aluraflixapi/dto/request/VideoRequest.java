@@ -33,6 +33,10 @@ public class VideoRequest {
   @NotNull(message = "categoryId must not be null", groups = {UpdateInfo.class})
   private Integer categoryId;
 
+  public void setCategoryId(int categoryId) {
+    this.categoryId = categoryId;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -52,4 +56,5 @@ public class VideoRequest {
     result = 31 * result + (url != null ? url.hashCode() : 0);
     return result;
   }
+
 }
