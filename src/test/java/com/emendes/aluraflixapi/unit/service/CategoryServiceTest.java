@@ -4,6 +4,7 @@ import com.emendes.aluraflixapi.dto.request.CategoryRequest;
 import com.emendes.aluraflixapi.dto.response.CategoryResponse;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
+import com.emendes.aluraflixapi.exception.OperationNotAllowedException;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.repository.CategoryRepository;
 import com.emendes.aluraflixapi.repository.VideoRepository;
@@ -203,6 +204,16 @@ class CategoryServiceTest {
           .withMessage("Category not found for id: " + 999);
     }
 
+    @Test
+    @DisplayName("update must throws OperationNotAllowedException when try update category with id 1")
+    void update_MustThrowsOperationNotAllowedException_WhenTryUpdateCategoryWithId1() {
+      CategoryRequest categoryRequest = new CategoryRequest("Terror xpto", "f1f1f1");
+
+      Assertions.assertThatExceptionOfType(OperationNotAllowedException.class)
+          .isThrownBy(() -> categoryService.update(1, categoryRequest))
+          .withMessage("Changing the 'Livre' category is not allowed");
+    }
+
   }
 
   @Nested
@@ -215,6 +226,14 @@ class CategoryServiceTest {
       Assertions.assertThatExceptionOfType(CategoryNotFoundException.class)
           .isThrownBy(() -> categoryService.delete(999))
           .withMessage("Category not found for id: " + 999);
+    }
+
+    @Test
+    @DisplayName("deleteById must throws OperationNotAllowedException when try delete category with id 1")
+    void deleteById_MustThrowsOperationNotAllowedException_WhenTryDeleteCategoryWithId1() {
+      Assertions.assertThatExceptionOfType(OperationNotAllowedException.class)
+          .isThrownBy(() -> categoryService.delete(1))
+          .withMessage("Deleting the 'Livre' category is not allowed");
     }
 
   }

@@ -4,6 +4,7 @@ import com.emendes.aluraflixapi.dto.request.CategoryRequest;
 import com.emendes.aluraflixapi.dto.response.CategoryResponse;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
+import com.emendes.aluraflixapi.exception.OperationNotAllowedException;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.repository.CategoryRepository;
 import com.emendes.aluraflixapi.repository.VideoRepository;
@@ -48,8 +49,10 @@ public class CategoryService {
     return mapper.map(categoryRepository.save(categoryToBeSaved), CategoryResponse.class);
   }
 
-//  TODO: Impedir do cliente atualizar a Categoria 'Livre'
   public CategoryResponse update(int id, CategoryRequest categoryRequest) {
+    if(id == 1) {
+      throw new OperationNotAllowedException("Changing the 'Livre' category is not allowed");
+    }
     Category categoryToBeUpdated = findCategoryById(id);
 
     categoryToBeUpdated.setTitle(categoryRequest.getTitle());

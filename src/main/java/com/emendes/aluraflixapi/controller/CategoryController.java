@@ -39,8 +39,6 @@ public class CategoryController {
     return ResponseEntity.ok(categoryService.findVideosByCategoryId(id, pageable));
   }
 
-//  FIXME: Bug! Quando o DB é criado e adicionado a category default (Livre), o primeiro insert tenta adicionar a category com id 1
-//  Isso causa conflict de chave primaria, a partir do segundo insert tudo ocorre bem.
   @PostMapping
   public ResponseEntity<CategoryResponse> create(
       @RequestBody @Valid CategoryRequest categoryRequest, UriComponentsBuilder uriBuilder) {
