@@ -4,7 +4,6 @@ import com.emendes.aluraflixapi.dto.request.VideoRequest;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.exception.VideoNotFoundException;
-import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.model.entity.Video;
 import com.emendes.aluraflixapi.repository.VideoRepository;
 import com.emendes.aluraflixapi.service.CategoryService;
@@ -25,7 +24,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
@@ -44,7 +42,7 @@ class VideoServiceTest {
   @Mock
   private ModelMapper mapperMock;
 
-  private final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.Direction.ASC, "id");
+  private final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10);
 
   //  Mocks de algumas dependências
   @BeforeEach

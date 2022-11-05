@@ -7,7 +7,6 @@ import com.emendes.aluraflixapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,7 @@ public class CategoryController {
   private final CategoryService categoryService;
 
   @GetMapping
-  public Page<CategoryResponse> findAll(@PageableDefault(sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+  public Page<CategoryResponse> findAll(@PageableDefault Pageable pageable) {
     return categoryService.findAll(pageable);
   }
 
@@ -35,7 +34,7 @@ public class CategoryController {
 
   @GetMapping("/{id}/videos")
   public ResponseEntity<Page<VideoResponse>> findVideosByCategory(
-      @PathVariable(name = "id") int id, @PageableDefault(sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+      @PathVariable(name = "id") int id, @PageableDefault Pageable pageable) {
     return ResponseEntity.ok(categoryService.findVideosByCategoryId(id, pageable));
   }
 

@@ -33,7 +33,7 @@ class GetCategoriesIT {
 
   @Test
   @Sql(scripts = {"/category/insert.sql"})
-  @DisplayName("get /categories must return 200 and Page<CategoryResponse> when found categories successfully")
+  @DisplayName("get /categories must return 200 and Page<CategoryResponse> when found only enable categories")
   void getCategories_MustReturn200AndPageCategoryResponse_WhenFoundCategoriesSuccessfully() {
     ResponseEntity<PageableResponse<CategoryResponse>> responseEntity = testRestTemplate.exchange(
         CATEGORIES_URI, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
@@ -42,11 +42,11 @@ class GetCategoriesIT {
     PageableResponse<CategoryResponse> actualBody = responseEntity.getBody();
 
     Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.OK);
-    Assertions.assertThat(actualBody).isNotNull().isNotEmpty().hasSize(3);
+    Assertions.assertThat(actualBody).isNotNull().isNotEmpty().hasSize(2);
 
     List<String> titleList = actualBody.stream().map(CategoryResponse::getTitle).toList();
 
-    Assertions.assertThat(titleList).contains("Livre", "Terror", "Comédia Lorem");
+    Assertions.assertThat(titleList).contains("Livre", "Terror");
   }
 
   @Test

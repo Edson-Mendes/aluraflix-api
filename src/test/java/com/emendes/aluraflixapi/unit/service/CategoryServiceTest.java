@@ -27,7 +27,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
@@ -45,7 +44,7 @@ class CategoryServiceTest {
   @Mock
   private VideoRepository videoRepositoryMock;
 
-  private final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10, Sort.Direction.ASC, "title");
+  private final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10);
 
   @BeforeEach
   void setUp() {
@@ -70,7 +69,7 @@ class CategoryServiceTest {
     @Test
     @DisplayName("findAll must return Page<CategoryResponse> when Found successfully")
     void findAll_MustReturnPageCategoryResponse_WhenFoundSuccessfully() {
-      BDDMockito.when(categoryRepositoryMock.findAll(DEFAULT_PAGEABLE)) // Mock comportamento.
+      BDDMockito.when(categoryRepositoryMock.findByEnabled(DEFAULT_PAGEABLE, true)) // Mock comportamento.
           .thenReturn(CategoryCreator.categoriesPage(DEFAULT_PAGEABLE));
 
       Page<CategoryResponse> actualCategoryResponsePage = categoryService.findAll(DEFAULT_PAGEABLE);
@@ -85,7 +84,7 @@ class CategoryServiceTest {
     @Test
     @DisplayName("findAll must return empty Page when there are no categoriess")
     void findAll_MustReturnsEmptyPage_WhenThereAreNoCategories() {
-      BDDMockito.when(categoryRepositoryMock.findAll(DEFAULT_PAGEABLE)) // Mock comportamento.
+      BDDMockito.when(categoryRepositoryMock.findByEnabled(DEFAULT_PAGEABLE, true)) // Mock comportamento.
           .thenReturn(Page.empty(DEFAULT_PAGEABLE));
 
       Page<CategoryResponse> actualCategoryResponsePage = categoryService.findAll(DEFAULT_PAGEABLE);
@@ -221,19 +220,30 @@ class CategoryServiceTest {
   class DeleteMethod {
 
     @Test
-    @DisplayName("deleteById must throws CategoryNotFoundException when id does not exist")
-    void deleteById_MustThrowsCategoryNotFoundException_WhenIdDoesNotExist() {
+    @DisplayName("delete must throws CategoryNotFoundException when id does not exist")
+    void delete_MustThrowsCategoryNotFoundException_WhenIdDoesNotExist() {
       Assertions.assertThatExceptionOfType(CategoryNotFoundException.class)
           .isThrownBy(() -> categoryService.delete(999))
           .withMessage("Category not found for id: " + 999);
     }
 
     @Test
-    @DisplayName("deleteById must throws OperationNotAllowedException when try delete category with id 1")
-    void deleteById_MustThrowsOperationNotAllowedException_WhenTryDeleteCategoryWithId1() {
+    @DisplayName("delete must throws OperationNotAllowedException when try delete category with id 1")
+    void delete_MustThrowsOperationNotAllowedException_WhenTryDeleteCategoryWithId1() {
       Assertions.assertThatExceptionOfType(OperationNotAllowedException.class)
           .isThrownBy(() -> categoryService.delete(1))
           .withMessage("Change/delete 'Livre' category not allowed");
+    }
+
+    @Test
+    @DisplayName("delete must throws OperationNotAllowedException when category has associated videos")
+    void delete_MustThrowsOperationNotAllowedException_WhenCategoryHasAssociatedVideos() {
+      BDDMockito.willThrow(new OperationNotAllowedException("This category has associated videos"))
+          .given(videoRepositoryMock).existsByCategory(ArgumentMatchers.any(Category.class));
+
+      Assertions.assertThatExceptionOfType(OperationNotAllowedException.class)
+          .isThrownBy(() -> categoryService.delete(100))
+          .withMessage("This category has associated videos");
     }
 
   }

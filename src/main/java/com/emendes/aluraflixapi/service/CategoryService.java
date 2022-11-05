@@ -25,9 +25,8 @@ public class CategoryService {
   private final VideoRepository videoRepository;
   private final ModelMapper mapper;
 
-//  TODO: Não devolver para o cliente categorias desativadas!
   public Page<CategoryResponse> findAll(Pageable pageable) {
-    return categoryRepository.findAll(pageable)
+    return categoryRepository.findByEnabled(pageable, true)
         .map(c -> mapper.map(c, CategoryResponse.class));
   }
 
@@ -60,11 +59,10 @@ public class CategoryService {
     return mapper.map(categoryRepository.save(categoryToBeUpdated), CategoryResponse.class);
   }
 
-//  TODO: Pensar/Pesquisar o que fazer com os vídeos associados a categoria deletada.
-//  Talvez não permitir que o cliente delete uma categoria com vídeos associados.
   public void delete(int id) {
     verifyIfIsCategoryLivre(id);
     Category category = findCategoryById(id);
+    verifyIfCategoryHasVideos(category);
 
     category.setEnabled(false);
     category.setDeletedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
@@ -81,9 +79,27 @@ public class CategoryService {
         .orElseThrow(() -> new CategoryNotFoundException("Category not found for id: " + id));
   }
 
-  private void verifyIfIsCategoryLivre(int id) {
-    if(id == 1) {
+  /**
+   * Verifica se o {@code categoryId} informado pertence a categoria Livre.<br/>
+   * Usado para impedir alterações na Categoria Livre!
+   * @param categoryId id da Category a ser verificada.
+   * @throws OperationNotAllowedException se {@code categoryId} pertence a Categoria Livre.
+   */
+  private void verifyIfIsCategoryLivre(int categoryId) {
+    if(categoryId == 1) {
       throw new OperationNotAllowedException("Change/delete 'Livre' category not allowed");
+    }
+  }
+
+  /**
+   * Verifica se a {@code categoria} possui vídeos associados.<br/>
+   * Categoria com vídeos associados não deve ser deletada!
+   * @param category categoria a ser verificada.
+   * @throws OperationNotAllowedException se {@code category} se categoria possui vídeos associados.
+   */
+  private void verifyIfCategoryHasVideos(Category category) {
+    if (videoRepository.existsByCategory(category)){
+      throw new OperationNotAllowedException("This category has associated videos");
     }
   }
 

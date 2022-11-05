@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +28,7 @@ public class VideoController {
   @GetMapping
   public ResponseEntity<Page<VideoResponse>> findAll(
       @RequestParam(name = "search", required = false) String title,
-      @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+      @PageableDefault Pageable pageable) {
     Page<VideoResponse> pageVideoResponse;
     log.info(title);
     if (title == null) {
@@ -48,7 +47,6 @@ public class VideoController {
   @PostMapping
   public ResponseEntity<VideoResponse> create(
       @RequestBody @Validated(CreateInfo.class) VideoRequest videoRequest, UriComponentsBuilder uriBuilder) {
-//    FIXME: Está sobrepondo o vídeo de id 1!
 //    FIXME: Cheiro de gambiarra! Não tem como ter certeza que a categoria default (Livre) possui id 1.
 //    Essa é a solução de momento, se não existir Category com id = 1, CategoryNotFoundException será lançado.
     if (videoRequest.getCategoryId() == null) {

@@ -96,4 +96,24 @@ class DeleteCategoriesIT {
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/categories/1");
   }
 
+  @Test
+  @Sql(scripts = {"/category/insert-category-and-video.sql"})
+  @DisplayName("delete /categories/{id} must return 400 and ExceptionDetails when delete category that has associated videos")
+  void deleteCategoriesId_MustReturn400AndExceptionDetails_WhenDeleteCategoryThatHasAssociatedVideos() {
+    String uri = String.format(CATEGORIES_URI_TEMPLATE, 200);
+
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplate.exchange(
+        uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+    ExceptionDetails actualBody = responseEntity.getBody();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+    Assertions.assertThat(actualBody).isNotNull();
+    Assertions.assertThat(actualBody.getTitle()).isEqualTo("Operation not allowed");
+    Assertions.assertThat(actualBody.getDetails()).isEqualTo("This category has associated videos");
+    Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
+    Assertions.assertThat(actualBody.getPath()).isEqualTo("/categories/200");
+  }
+
 }
