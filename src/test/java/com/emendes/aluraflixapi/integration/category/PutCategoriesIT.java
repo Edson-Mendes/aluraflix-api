@@ -130,7 +130,7 @@ class PutCategoriesIT {
     Assertions.assertThat(actualBody).isNotNull();
     Assertions.assertThat(actualBody.getTitle()).isEqualTo("Operation not allowed");
     Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
-    Assertions.assertThat(actualBody.getDetails()).isEqualTo("Changing the 'Livre' category is not allowed");
+    Assertions.assertThat(actualBody.getDetails()).isEqualTo("Change/delete 'Livre' category not allowed");
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/categories/1");
   }
 

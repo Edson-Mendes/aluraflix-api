@@ -211,7 +211,7 @@ class CategoryServiceTest {
 
       Assertions.assertThatExceptionOfType(OperationNotAllowedException.class)
           .isThrownBy(() -> categoryService.update(1, categoryRequest))
-          .withMessage("Changing the 'Livre' category is not allowed");
+          .withMessage("Change/delete 'Livre' category not allowed");
     }
 
   }
@@ -233,7 +233,7 @@ class CategoryServiceTest {
     void deleteById_MustThrowsOperationNotAllowedException_WhenTryDeleteCategoryWithId1() {
       Assertions.assertThatExceptionOfType(OperationNotAllowedException.class)
           .isThrownBy(() -> categoryService.delete(1))
-          .withMessage("Deleting the 'Livre' category is not allowed");
+          .withMessage("Change/delete 'Livre' category not allowed");
     }
 
   }

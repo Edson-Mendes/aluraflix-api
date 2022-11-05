@@ -25,6 +25,7 @@ public class CategoryService {
   private final VideoRepository videoRepository;
   private final ModelMapper mapper;
 
+//  TODO: Não devolver para o cliente categorias desativadas!
   public Page<CategoryResponse> findAll(Pageable pageable) {
     return categoryRepository.findAll(pageable)
         .map(c -> mapper.map(c, CategoryResponse.class));
@@ -50,9 +51,7 @@ public class CategoryService {
   }
 
   public CategoryResponse update(int id, CategoryRequest categoryRequest) {
-    if(id == 1) {
-      throw new OperationNotAllowedException("Changing the 'Livre' category is not allowed");
-    }
+    verifyIfIsCategoryLivre(id);
     Category categoryToBeUpdated = findCategoryById(id);
 
     categoryToBeUpdated.setTitle(categoryRequest.getTitle());
@@ -62,9 +61,9 @@ public class CategoryService {
   }
 
 //  TODO: Pensar/Pesquisar o que fazer com os vídeos associados a categoria deletada.
-//  TODO: Impedir do cliente deletar a Categoria 'Livre'
-//  TODO: Adicionar uma condicional para não "Deletar" uma categoria já deletada
+//  Talvez não permitir que o cliente delete uma categoria com vídeos associados.
   public void delete(int id) {
+    verifyIfIsCategoryLivre(id);
     Category category = findCategoryById(id);
 
     category.setEnabled(false);
@@ -80,6 +79,12 @@ public class CategoryService {
   private Category findCategoryById(int id) {
     return categoryRepository.findById(id)
         .orElseThrow(() -> new CategoryNotFoundException("Category not found for id: " + id));
+  }
+
+  private void verifyIfIsCategoryLivre(int id) {
+    if(id == 1) {
+      throw new OperationNotAllowedException("Change/delete 'Livre' category not allowed");
+    }
   }
 
 }
