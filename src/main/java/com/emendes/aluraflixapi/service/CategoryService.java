@@ -60,6 +60,7 @@ public class CategoryService {
 
 //  TODO: Pensar/Pesquisar o que fazer com os vídeos associados a categoria deletada.
 //  TODO: Impedir do cliente deletar a Categoria 'Livre'
+//  TODO: Adicionar uma condicional para não "Deletar" uma categoria já deletada
   public void delete(int id) {
     Category category = findCategoryById(id);
 

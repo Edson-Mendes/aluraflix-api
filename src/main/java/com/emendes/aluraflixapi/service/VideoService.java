@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,17 +41,14 @@ public class VideoService {
   }
 
   public VideoResponse create(VideoRequest videoRequest) {
-    if (!categoryService.existsEnabledCategoryWithId(videoRequest.getCategoryId())) {
-      throw new CategoryNotFoundException("Category not found for id: " + videoRequest.getCategoryId());
-    }
-
+    verifyCategoryIntegrity(videoRequest.getCategoryId());
     Video videoToBeSaved = videoRequestToVideo(videoRequest);
 
     return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
   }
 
-  //  TODO: Impedir do cliente atualizar um vídeo com uma categoria deletada
   public VideoResponse update(long id, VideoRequest videoRequest) {
+    verifyCategoryIntegrity(videoRequest.getCategoryId());
     Video videoToBeUpdated = findVideoById(id);
 
     videoToBeUpdated.setTitle(videoRequest.getTitle());
@@ -80,6 +78,17 @@ public class VideoService {
         .category(new Category(videoRequest.getCategoryId()))
         .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
         .build();
+  }
+
+  /**
+   * Verifica se o {@code id} informado pertence a uma Category existente e ativa.
+   * @param categoryId id da Category a ser verificada.
+   * @throws CategoryNotFoundException se {@code id} não pertence a uma Category existente e ativa.
+   */
+  private void verifyCategoryIntegrity(Integer categoryId) {
+    if (!categoryService.existsEnabledCategoryWithId(categoryId)) {
+      throw new CategoryNotFoundException("Category not found for id: " + categoryId, HttpStatus.BAD_REQUEST);
+    }
   }
 
 }

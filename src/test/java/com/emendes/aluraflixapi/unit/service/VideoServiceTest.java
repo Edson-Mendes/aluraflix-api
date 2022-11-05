@@ -68,6 +68,7 @@ class VideoServiceTest {
     BDDMockito.willThrow(new VideoNotFoundException("Video not found for id: " + nonExistentId))
         .given(videoRepositoryMock).findById(nonExistentId);
 
+    BDDMockito.when(categoryServiceMock.existsEnabledCategoryWithId(100)).thenReturn(true);
   }
 
   @Nested
@@ -171,7 +172,6 @@ class VideoServiceTest {
     @Test
     @DisplayName("create must return VideoResponse when create successfully")
     void create_MustReturnVideoResponse_WhenCreateSuccessfully() {
-      BDDMockito.when(categoryServiceMock.existsEnabledCategoryWithId(100)).thenReturn(true);
       VideoRequest videoRequest = new VideoRequest(
           "title xpto", "description xpto", "http://www.sitexpto.com", 100);
 
@@ -207,7 +207,7 @@ class VideoServiceTest {
     @DisplayName("update must return VideoResponse when update successfully")
     void update_MustReturnVideoResponse_WhenUpdateSuccessfully() {
       VideoRequest videoRequest = new VideoRequest(
-          "title xpto updated", "description xpto updated", "http://www.sitexpto.com", 10000);
+          "title xpto updated", "description xpto updated", "http://www.sitexpto.com", 100);
       Video video = VideoCreator.from(1000L, videoRequest);
 
       BDDMockito.when(videoRepositoryMock.save(video)).thenReturn(video);
@@ -219,18 +219,31 @@ class VideoServiceTest {
       Assertions.assertThat(actualVideoResponse.getTitle()).isEqualTo("title xpto updated");
       Assertions.assertThat(actualVideoResponse.getDescription()).isEqualTo("description xpto updated");
       Assertions.assertThat(actualVideoResponse.getUrl()).isEqualTo("http://www.sitexpto.com");
-      Assertions.assertThat(actualVideoResponse.getCategoryId()).isEqualTo(10000);
+      Assertions.assertThat(actualVideoResponse.getCategoryId()).isEqualTo(100);
     }
 
     @Test
     @DisplayName("update must throws VideoNotFoundException when id does not exist")
     void update_MustThrowsVideoNotFoundException_WhenIdDoesNotExist() {
+      BDDMockito.when(categoryServiceMock.existsEnabledCategoryWithId(1)).thenReturn(true);
       VideoRequest videoRequest = new VideoRequest(
           "title xpto updated", "description xpto updated", "http://www.sitexpto.com", 1);
 
       Assertions.assertThatExceptionOfType(VideoNotFoundException.class)
           .isThrownBy(() -> videoService.update(9999L, videoRequest))
           .withMessage("Video not found for id: " + 9999L);
+    }
+
+    @Test
+    @DisplayName("update must throws CategoryNotFoundException when does not exist enabled category with categoryId")
+    void update_MustThrowsVideoNotFoundException_WhenDoesNotExistEnabledCategoryWithCategoryId() {
+      BDDMockito.when(categoryServiceMock.existsEnabledCategoryWithId(999)).thenReturn(false);
+      VideoRequest videoRequest = new VideoRequest(
+          "title xpto updated", "description xpto updated", "http://www.sitexpto.com", 999);
+
+      Assertions.assertThatExceptionOfType(CategoryNotFoundException.class)
+          .isThrownBy(() -> videoService.update(1000L, videoRequest))
+          .withMessage("Category not found for id: " + 999);
     }
 
   }

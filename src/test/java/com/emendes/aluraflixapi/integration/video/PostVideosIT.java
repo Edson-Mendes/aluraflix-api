@@ -107,10 +107,10 @@ class PostVideosIT {
     HttpStatus actualStatus = responseEntity.getStatusCode();
     ExceptionDetails actualBody = responseEntity.getBody();
 
-    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.NOT_FOUND);
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
     Assertions.assertThat(actualBody).isNotNull();
     Assertions.assertThat(actualBody.getTitle()).isEqualTo("Resource not found");
-    Assertions.assertThat(actualBody.getStatus()).isEqualTo(404);
+    Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
     Assertions.assertThat(actualBody.getDetails()).isEqualTo("Category not found for id: 100");
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/videos");
   }

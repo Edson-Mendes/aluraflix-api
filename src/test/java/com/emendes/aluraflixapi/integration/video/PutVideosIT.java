@@ -134,6 +134,10 @@ class PutVideosIT {
 
     Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
     Assertions.assertThat(actualBody).isNotNull();
+    Assertions.assertThat(actualBody.getTitle()).isEqualTo("Resource not found");
+    Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
+    Assertions.assertThat(actualBody.getDetails()).isEqualTo("Category not found for id: 100");
+    Assertions.assertThat(actualBody.getPath()).isEqualTo("/videos/1");
   }
 
 }

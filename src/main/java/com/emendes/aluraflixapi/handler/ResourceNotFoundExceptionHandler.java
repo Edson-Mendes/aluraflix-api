@@ -16,14 +16,14 @@ public class ResourceNotFoundExceptionHandler {
   @ExceptionHandler(NotFoundException.class)
   public ResponseEntity<ExceptionDetails> handleResourceNotFound(NotFoundException exception, HttpServletRequest request) {
     ExceptionDetails details = ExceptionDetails.builder()
-        .status(HttpStatus.NOT_FOUND.value())
+        .status(exception.getHttpStatus().value())
         .title("Resource not found")
         .details(exception.getMessage())
         .timestamp(LocalDateTime.now())
         .path(request.getRequestURI())
         .build();
 
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(details);
+    return ResponseEntity.status(exception.getHttpStatus()).body(details);
   }
 
 }
