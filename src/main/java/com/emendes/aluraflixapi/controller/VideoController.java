@@ -1,5 +1,6 @@
 package com.emendes.aluraflixapi.controller;
 
+import com.emendes.aluraflixapi.controller.swagger.VideoControllerSwagger;
 import com.emendes.aluraflixapi.dto.request.VideoRequest;
 import com.emendes.aluraflixapi.dto.request.groups.CreateInfo;
 import com.emendes.aluraflixapi.dto.request.groups.UpdateInfo;
@@ -21,10 +22,11 @@ import java.net.URI;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/videos")
-public class VideoController {
+public class VideoController implements VideoControllerSwagger {
 
   private final VideoService videoService;
 
+  @Override
   @GetMapping
   public ResponseEntity<Page<VideoResponse>> findAll(
       @RequestParam(name = "search", required = false) String title,
@@ -39,11 +41,13 @@ public class VideoController {
     return ResponseEntity.ok(pageVideoResponse);
   }
 
+  @Override
   @GetMapping("/{id}")
   public ResponseEntity<VideoResponse> findById(@PathVariable(name = "id") long id) {
     return ResponseEntity.ok(videoService.findById(id));
   }
 
+  @Override
   @PostMapping
   public ResponseEntity<VideoResponse> create(
       @RequestBody @Validated(CreateInfo.class) VideoRequest videoRequest, UriComponentsBuilder uriBuilder) {
@@ -57,6 +61,7 @@ public class VideoController {
     return ResponseEntity.created(uri).body(videoResponse);
   }
 
+  @Override
   @PutMapping("/{id}")
   public ResponseEntity<VideoResponse> update(
       @PathVariable(name = "id") long id,
@@ -64,6 +69,7 @@ public class VideoController {
     return ResponseEntity.ok(videoService.update(id, videoRequest));
   }
 
+  @Override
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable(name = "id") long id) {
     videoService.deleteById(id);

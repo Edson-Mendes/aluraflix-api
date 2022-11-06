@@ -1,5 +1,6 @@
 package com.emendes.aluraflixapi.controller;
 
+import com.emendes.aluraflixapi.controller.swagger.CategoryControllerSwagger;
 import com.emendes.aluraflixapi.dto.request.CategoryRequest;
 import com.emendes.aluraflixapi.dto.response.CategoryResponse;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
@@ -18,26 +19,30 @@ import java.net.URI;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/categories")
-public class CategoryController {
+public class CategoryController implements CategoryControllerSwagger {
 
   private final CategoryService categoryService;
 
+  @Override
   @GetMapping
   public Page<CategoryResponse> findAll(@PageableDefault Pageable pageable) {
     return categoryService.findAll(pageable);
   }
 
+  @Override
   @GetMapping("/{id}")
   public ResponseEntity<CategoryResponse> findById(@PathVariable(name = "id") int id) {
     return ResponseEntity.ok(categoryService.findById(id));
   }
 
+  @Override
   @GetMapping("/{id}/videos")
   public ResponseEntity<Page<VideoResponse>> findVideosByCategory(
       @PathVariable(name = "id") int id, @PageableDefault Pageable pageable) {
     return ResponseEntity.ok(categoryService.findVideosByCategoryId(id, pageable));
   }
 
+  @Override
   @PostMapping
   public ResponseEntity<CategoryResponse> create(
       @RequestBody @Valid CategoryRequest categoryRequest, UriComponentsBuilder uriBuilder) {
@@ -46,12 +51,14 @@ public class CategoryController {
     return ResponseEntity.created(uri).body(categoryResponse);
   }
 
+  @Override
   @PutMapping("/{id}")
   public ResponseEntity<CategoryResponse> update(
       @PathVariable(name = "id") int id, @RequestBody @Valid CategoryRequest categoryRequest) {
     return ResponseEntity.ok(categoryService.update(id, categoryRequest));
   }
 
+  @Override
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable(name = "id") int id) {
     categoryService.delete(id);

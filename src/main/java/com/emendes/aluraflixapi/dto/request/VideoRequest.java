@@ -2,6 +2,7 @@ package com.emendes.aluraflixapi.dto.request;
 
 import com.emendes.aluraflixapi.dto.request.groups.CreateInfo;
 import com.emendes.aluraflixapi.dto.request.groups.UpdateInfo;
+import com.emendes.aluraflixapi.dto.request.swagger.VideoRequestSwagger;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -15,7 +16,7 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @ToString
-public class VideoRequest {
+public class VideoRequest implements VideoRequestSwagger {
 
   @NotBlank(message = "title must not be null or blank", groups = {CreateInfo.class})
   @Size(max = 100, message = "title must be maximum {max} characters long", groups = {CreateInfo.class})

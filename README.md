@@ -222,17 +222,18 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
 - `PostgreSQL`
 - `Flyway`
 - `Lombok`
+- `OpenAPI/Swagger`
 - `Mockito`
 - `JUnit5`
 - `Testcontainers`
-- `Testes de Unidade`
+- `Testes de unidade`
 - `Testes de integração`
 
 ## :gear: Atualizações futuras
 - [x] CRUD de Categorias dos vídeos.
 - [x] Relacionamento entre categorias e vídeos.
-- [ ] Swagger/OpenApi para uma melhor documentação da api.
+- [x] Swagger/OpenApi para uma melhor documentação da api.
 - [ ] HATEOAS para ajudar os clientes a consumirem a API sem a necessidade de conhecimento prévio.
 - [x] Testes de Integração.
-- [ ] Pensar no que fazer com Vídeos associados a uma Categoria deletada.
-- [ ] Fazer os Controllers/Services interagirem com as Services através de interfaces.
+- [x] Fazer os Controllers/Services interagirem com as Services através de interfaces.
+- [ ] Configurarar CORS.

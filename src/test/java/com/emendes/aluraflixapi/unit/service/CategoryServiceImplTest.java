@@ -8,7 +8,7 @@ import com.emendes.aluraflixapi.exception.OperationNotAllowedException;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.repository.CategoryRepository;
 import com.emendes.aluraflixapi.repository.VideoRepository;
-import com.emendes.aluraflixapi.service.CategoryService;
+import com.emendes.aluraflixapi.service.CategoryServiceImpl;
 import com.emendes.aluraflixapi.util.creator.CategoryCreator;
 import com.emendes.aluraflixapi.util.creator.CategoryResponseCreator;
 import com.emendes.aluraflixapi.util.creator.VideoCreator;
@@ -33,10 +33,10 @@ import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @DisplayName("Unit tests for CategoryService")
-class CategoryServiceTest {
+class CategoryServiceImplTest {
 
   @InjectMocks
-  private CategoryService categoryService;
+  private CategoryServiceImpl categoryServiceImpl;
   @Mock
   private CategoryRepository categoryRepositoryMock;
   @Mock
@@ -72,7 +72,7 @@ class CategoryServiceTest {
       BDDMockito.when(categoryRepositoryMock.findByEnabled(DEFAULT_PAGEABLE, true)) // Mock comportamento.
           .thenReturn(CategoryCreator.categoriesPage(DEFAULT_PAGEABLE));
 
-      Page<CategoryResponse> actualCategoryResponsePage = categoryService.findAll(DEFAULT_PAGEABLE);
+      Page<CategoryResponse> actualCategoryResponsePage = categoryServiceImpl.findAll(DEFAULT_PAGEABLE);
 
       CategoryResponse expectedCategoryResponse = new CategoryResponse(100, "Terror xpto", "f1f1f1");
       Assertions.assertThat(actualCategoryResponsePage)
@@ -87,7 +87,7 @@ class CategoryServiceTest {
       BDDMockito.when(categoryRepositoryMock.findByEnabled(DEFAULT_PAGEABLE, true)) // Mock comportamento.
           .thenReturn(Page.empty(DEFAULT_PAGEABLE));
 
-      Page<CategoryResponse> actualCategoryResponsePage = categoryService.findAll(DEFAULT_PAGEABLE);
+      Page<CategoryResponse> actualCategoryResponsePage = categoryServiceImpl.findAll(DEFAULT_PAGEABLE);
 
       Assertions.assertThat(actualCategoryResponsePage)
           .isEmpty();
@@ -102,7 +102,7 @@ class CategoryServiceTest {
     @Test
     @DisplayName("findById must return CategoryResponse when found by id successfully")
     void findById_MustReturnCategoryResponse_WhenFoundByIdSuccessfully() {
-      CategoryResponse actualCategoryResponse = categoryService.findById(100);
+      CategoryResponse actualCategoryResponse = categoryServiceImpl.findById(100);
 
       CategoryResponse expectedCategoryResponse = new CategoryResponse(100, "Terror xpto", "f1f1f1");
 
@@ -114,7 +114,7 @@ class CategoryServiceTest {
     @DisplayName("findById must throws CategoryNotFoundException when not found by id")
     void findById_MustThrowsCategoryNotFoundException_WhenNotFoundById() {
       Assertions.assertThatExceptionOfType(CategoryNotFoundException.class)
-          .isThrownBy(() -> categoryService.findById(999))
+          .isThrownBy(() -> categoryServiceImpl.findById(999))
           .withMessage("Category not found for id: " + 999);
     }
 
@@ -129,7 +129,7 @@ class CategoryServiceTest {
     void findVideosByCategoryId_MustReturnPageVideoResponse_WhenFoundVideosByCategoryIdSuccessfully() {
       BDDMockito.when(mapperMock.map(VideoCreator.withAllParameters(), VideoResponse.class))
           .thenReturn(VideoResponseCreator.fromVideo(VideoCreator.withAllParameters()));
-      Page<VideoResponse> actualVideoResponsePage = categoryService.findVideosByCategoryId(100, DEFAULT_PAGEABLE);
+      Page<VideoResponse> actualVideoResponsePage = categoryServiceImpl.findVideosByCategoryId(100, DEFAULT_PAGEABLE);
 
       VideoResponse expectedVideoResponse = new VideoResponse(
           1000L, "title xpto", "description xpto", "http://www.sitexpto.com", 100);
@@ -144,7 +144,7 @@ class CategoryServiceTest {
     @DisplayName("findVideosByCategoryId must throws CategoryNotFoundException when not found categoryId")
     void findVideosByCategoryId_MustThrowsCategoryNotFoundException_WhenNotFoundCategoryId() {
       Assertions.assertThatExceptionOfType(CategoryNotFoundException.class)
-          .isThrownBy(() -> categoryService.findVideosByCategoryId(999, DEFAULT_PAGEABLE))
+          .isThrownBy(() -> categoryServiceImpl.findVideosByCategoryId(999, DEFAULT_PAGEABLE))
           .withMessage("Category not found for id: " + 999);
     }
 
@@ -164,7 +164,7 @@ class CategoryServiceTest {
       BDDMockito.when(categoryRepositoryMock.save(ArgumentMatchers.any(Category.class)))
           .thenReturn(CategoryCreator.withAllParameters());
 
-      CategoryResponse actualCategoryResponse = categoryService.create(categoryRequest);
+      CategoryResponse actualCategoryResponse = categoryServiceImpl.create(categoryRequest);
 
       Assertions.assertThat(actualCategoryResponse).isNotNull();
       Assertions.assertThat(actualCategoryResponse.getTitle()).isEqualTo("Terror xpto");
@@ -186,7 +186,7 @@ class CategoryServiceTest {
       BDDMockito.when(categoryRepositoryMock.save(ArgumentMatchers.any(Category.class))).thenReturn(category);
       BDDMockito.when(mapperMock.map(category, CategoryResponse.class)).thenReturn(CategoryResponseCreator.fromCategory(category));
 
-      CategoryResponse actualCategoryResponse = categoryService.update(100, categoryRequest);
+      CategoryResponse actualCategoryResponse = categoryServiceImpl.update(100, categoryRequest);
 
       Assertions.assertThat(actualCategoryResponse).isNotNull();
       Assertions.assertThat(actualCategoryResponse.getTitle()).isEqualTo("Terror xpto updated");
@@ -199,7 +199,7 @@ class CategoryServiceTest {
       CategoryRequest categoryRequest = new CategoryRequest("Terror xpto updated", "f1f1f1");
 
       Assertions.assertThatExceptionOfType(CategoryNotFoundException.class)
-          .isThrownBy(() -> categoryService.update(999, categoryRequest))
+          .isThrownBy(() -> categoryServiceImpl.update(999, categoryRequest))
           .withMessage("Category not found for id: " + 999);
     }
 
@@ -209,7 +209,7 @@ class CategoryServiceTest {
       CategoryRequest categoryRequest = new CategoryRequest("Terror xpto", "f1f1f1");
 
       Assertions.assertThatExceptionOfType(OperationNotAllowedException.class)
-          .isThrownBy(() -> categoryService.update(1, categoryRequest))
+          .isThrownBy(() -> categoryServiceImpl.update(1, categoryRequest))
           .withMessage("Change/delete 'Livre' category not allowed");
     }
 
@@ -223,7 +223,7 @@ class CategoryServiceTest {
     @DisplayName("delete must throws CategoryNotFoundException when id does not exist")
     void delete_MustThrowsCategoryNotFoundException_WhenIdDoesNotExist() {
       Assertions.assertThatExceptionOfType(CategoryNotFoundException.class)
-          .isThrownBy(() -> categoryService.delete(999))
+          .isThrownBy(() -> categoryServiceImpl.delete(999))
           .withMessage("Category not found for id: " + 999);
     }
 
@@ -231,7 +231,7 @@ class CategoryServiceTest {
     @DisplayName("delete must throws OperationNotAllowedException when try delete category with id 1")
     void delete_MustThrowsOperationNotAllowedException_WhenTryDeleteCategoryWithId1() {
       Assertions.assertThatExceptionOfType(OperationNotAllowedException.class)
-          .isThrownBy(() -> categoryService.delete(1))
+          .isThrownBy(() -> categoryServiceImpl.delete(1))
           .withMessage("Change/delete 'Livre' category not allowed");
     }
 
@@ -242,7 +242,7 @@ class CategoryServiceTest {
           .given(videoRepositoryMock).existsByCategory(ArgumentMatchers.any(Category.class));
 
       Assertions.assertThatExceptionOfType(OperationNotAllowedException.class)
-          .isThrownBy(() -> categoryService.delete(100))
+          .isThrownBy(() -> categoryServiceImpl.delete(100))
           .withMessage("This category has associated videos");
     }
 

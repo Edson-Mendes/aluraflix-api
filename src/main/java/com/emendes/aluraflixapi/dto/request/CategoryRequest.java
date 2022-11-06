@@ -1,5 +1,6 @@
 package com.emendes.aluraflixapi.dto.request;
 
+import com.emendes.aluraflixapi.dto.request.swagger.CategoryRequestSwagger;
 import com.emendes.aluraflixapi.validation.annotation.Hexadecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @ToString
-public class CategoryRequest {
+public class CategoryRequest implements CategoryRequestSwagger {
 
   @NotBlank(message = "title must not be null or blank")
   @Size(max = 50, message = "title must be maximum {max} characters long")
