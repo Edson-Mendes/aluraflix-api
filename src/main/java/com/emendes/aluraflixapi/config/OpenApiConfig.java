@@ -17,7 +17,7 @@ public class OpenApiConfig {
     return new OpenAPI()
         .info(new Info().title("Alura Flix API")
             .description("Alura Challenge Backend 5 ed")
-            .version("0.0.1").contact(contact));
+            .version("0.2-semana2").contact(contact));
   }
 
 }

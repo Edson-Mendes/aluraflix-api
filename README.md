@@ -211,6 +211,17 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
   ```
     docker-compose -f stack.yml up -d
   ```
+  
+## :hammer_and_wrench: Deploy
+
+Até o momento não realizei o deploy da aplicação, mas caso deseje usar/testar/brincar, 
+execute este aquivo [docker-compose.yml](https://github.com/Edson-Mendes/aluraflix-api/blob/main/docker-compose.yml). 
+Que irá subir um container postgres e um container da aplicação Aluraflix.
+
+  ```
+    docker-compose -f docker-compose.yml up
+  ```
+Após subir os containers, acesse [localhost:22222/swagger-ui.html](localhost:22222/swagger-ui.html) 
 
 ## :toolbox: Tecnologias
 
@@ -237,3 +248,4 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
 - [x] Testes de Integração.
 - [x] Fazer os Controllers/Services interagirem com as Services através de interfaces.
 - [ ] Configurarar CORS.
+- [x] Criação de imagem docker do projeto.

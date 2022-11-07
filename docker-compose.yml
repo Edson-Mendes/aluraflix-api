@@ -1,0 +1,34 @@
+version: "3.7"
+
+x-datasource-variables: &datasource-variables
+  DB_URL: jdbc:postgresql://af-db:5432/aluraflix-db
+  DB_USERNAME: user
+  DB_PASSWORD: 1234
+x-postgres-variables: &postgres-variables
+  POSTGRES_DB: aluraflix-db
+  POSTGRES_USER: user
+  POSTGRES_PASSWORD: 1234
+
+services:
+  db:
+    image: postgres
+    container_name: af-db
+    ports:
+      - "54321:5432"
+    environment:
+      <<: *postgres-variables
+    volumes:
+      - af-db-volume:/var/lib/postgresql/data
+
+  app:
+    image: edsonmendes/aluraflix:0.2-semana2
+    container_name: af-app
+    depends_on:
+      - db
+    ports:
+      - "22222:8080"
+    environment:
+      <<: *datasource-variables
+
+volumes:
+  af-db-volume:
