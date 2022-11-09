@@ -4,6 +4,7 @@ import com.emendes.aluraflixapi.dto.request.VideoRequest;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.exception.VideoNotFoundException;
+import com.emendes.aluraflixapi.mapper.VideoMapper;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.model.entity.Video;
 import com.emendes.aluraflixapi.repository.VideoRepository;
@@ -23,31 +24,33 @@ public class VideoServiceImpl implements VideoService{
 
   private final VideoRepository videoRepository;
   private final CategoryService categoryService;
-  private final ModelMapper mapper;
+  private final VideoMapper videoMapper;
 
   @Override
   public Page<VideoResponse> findAll(Pageable pageable) {
     return videoRepository.findAll(pageable)
-        .map(v -> mapper.map(v, VideoResponse.class));
+        .map(videoMapper::toVideoResponse);
   }
 
   @Override
   public VideoResponse findById(long id) {
-    return mapper.map(findVideoById(id), VideoResponse.class);
+    return videoMapper.toVideoResponse(findVideoById(id));
   }
 
   @Override
   public Page<VideoResponse> findByTitle(String title, Pageable pageable) {
     return videoRepository.findByTitleIgnoreCaseContaining(title, pageable)
-        .map(v -> mapper.map(v, VideoResponse.class));
+        .map(videoMapper::toVideoResponse);
   }
 
   @Override
   public VideoResponse create(VideoRequest videoRequest) {
     verifyCategoryIntegrity(videoRequest.getCategoryId());
-    Video videoToBeSaved = videoRequestToVideo(videoRequest);
+    Video videoToBeSaved = videoMapper.fromVideoRequest(videoRequest);
 
-    return mapper.map(videoRepository.save(videoToBeSaved), VideoResponse.class);
+    videoToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+
+    return videoMapper.toVideoResponse(videoRepository.save(videoToBeSaved));
   }
 
   @Override
@@ -55,12 +58,9 @@ public class VideoServiceImpl implements VideoService{
     verifyCategoryIntegrity(videoRequest.getCategoryId());
     Video videoToBeUpdated = findVideoById(id);
 
-    videoToBeUpdated.setTitle(videoRequest.getTitle());
-    videoToBeUpdated.setDescription(videoRequest.getDescription());
-    videoToBeUpdated.setUrl(videoRequest.getUrl());
-    videoToBeUpdated.setCategory(new Category(videoRequest.getCategoryId()));
+    videoToBeUpdated = videoMapper.merge(videoRequest, videoToBeUpdated);
 
-    return mapper.map(videoRepository.save(videoToBeUpdated), VideoResponse.class);
+    return videoMapper.toVideoResponse(videoRepository.save(videoToBeUpdated));
   }
 
   @Override
@@ -72,17 +72,6 @@ public class VideoServiceImpl implements VideoService{
   private Video findVideoById(long id) {
     return videoRepository.findById(id)
         .orElseThrow(() -> new VideoNotFoundException("Video not found for id: " + id));
-  }
-
-  private Video videoRequestToVideo(VideoRequest videoRequest) {
-    return Video.builder()
-        .id(null)
-        .title(videoRequest.getTitle())
-        .description(videoRequest.getDescription())
-        .url(videoRequest.getUrl())
-        .category(new Category(videoRequest.getCategoryId()))
-        .createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
-        .build();
   }
 
   /**
