@@ -5,14 +5,13 @@ import com.emendes.aluraflixapi.dto.response.CategoryResponse;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.exception.OperationNotAllowedException;
+import com.emendes.aluraflixapi.mapper.CategoryMapper;
+import com.emendes.aluraflixapi.mapper.VideoMapper;
 import com.emendes.aluraflixapi.model.entity.Category;
+import com.emendes.aluraflixapi.model.entity.Video;
 import com.emendes.aluraflixapi.repository.CategoryRepository;
 import com.emendes.aluraflixapi.repository.VideoRepository;
 import com.emendes.aluraflixapi.service.CategoryServiceImpl;
-import com.emendes.aluraflixapi.util.creator.CategoryCreator;
-import com.emendes.aluraflixapi.util.creator.CategoryResponseCreator;
-import com.emendes.aluraflixapi.util.creator.VideoCreator;
-import com.emendes.aluraflixapi.util.creator.VideoResponseCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,12 +22,14 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
@@ -40,7 +41,9 @@ class CategoryServiceImplTest {
   @Mock
   private CategoryRepository categoryRepositoryMock;
   @Mock
-  private ModelMapper mapperMock;
+  private CategoryMapper categoryMapperMock;
+  @Mock
+  private VideoMapper videoMapperMock;
   @Mock
   private VideoRepository videoRepositoryMock;
 
@@ -48,18 +51,12 @@ class CategoryServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    int nonExistentId = 999;
-
-    BDDMockito.when(categoryRepositoryMock.findById(100)).thenReturn(Optional.of(CategoryCreator.withAllParameters()));
-
-    BDDMockito.willThrow(new CategoryNotFoundException("Category not found for id: " + nonExistentId))
-        .given(categoryRepositoryMock).findById(nonExistentId);
-
-    BDDMockito.when(mapperMock.map(CategoryCreator.withAllParameters(), CategoryResponse.class))
-        .thenReturn(CategoryResponseCreator.fromCategory(CategoryCreator.withAllParameters()));
-
-    BDDMockito.when(videoRepositoryMock.findByCategory(CategoryCreator.withAllParameters(), DEFAULT_PAGEABLE))
-        .thenReturn(VideoCreator.videosPage(DEFAULT_PAGEABLE));
+    BDDMockito.when(categoryRepositoryMock.findById(100))
+        .thenReturn(optionalCategory());
+    BDDMockito.willThrow(new CategoryNotFoundException("Category not found for id: " + 999))
+        .given(categoryRepositoryMock).findById(999);
+    BDDMockito.when(categoryMapperMock.toCategoryResponse(ArgumentMatchers.any(Category.class)))
+        .thenReturn(categoryResponse());
   }
 
   @Nested
@@ -70,7 +67,9 @@ class CategoryServiceImplTest {
     @DisplayName("findAll must return Page<CategoryResponse> when Found successfully")
     void findAll_MustReturnPageCategoryResponse_WhenFoundSuccessfully() {
       BDDMockito.when(categoryRepositoryMock.findByEnabled(DEFAULT_PAGEABLE, true)) // Mock comportamento.
-          .thenReturn(CategoryCreator.categoriesPage(DEFAULT_PAGEABLE));
+          .thenReturn(categoriesPage());
+      BDDMockito.when(categoryMapperMock.toCategoryResponse(ArgumentMatchers.any(Category.class)))
+          .thenReturn(categoryResponse());
 
       Page<CategoryResponse> actualCategoryResponsePage = categoryService.findAll(DEFAULT_PAGEABLE);
 
@@ -102,6 +101,9 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("findById must return CategoryResponse when found by id successfully")
     void findById_MustReturnCategoryResponse_WhenFoundByIdSuccessfully() {
+      BDDMockito.when(categoryRepositoryMock.findById(100))
+          .thenReturn(optionalCategory());
+
       CategoryResponse actualCategoryResponse = categoryService.findById(100);
 
       CategoryResponse expectedCategoryResponse = new CategoryResponse(100, "Terror xpto", "f1f1f1");
@@ -127,8 +129,10 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("findVideosByCategoryId must return Page<VideoResponse> when found videos by categoryId successfully")
     void findVideosByCategoryId_MustReturnPageVideoResponse_WhenFoundVideosByCategoryIdSuccessfully() {
-      BDDMockito.when(mapperMock.map(VideoCreator.withAllParameters(), VideoResponse.class))
-          .thenReturn(VideoResponseCreator.fromVideo(VideoCreator.withAllParameters()));
+      BDDMockito.when(videoRepositoryMock.findByCategory(category(), DEFAULT_PAGEABLE))
+          .thenReturn(videosPage());
+      BDDMockito.when(videoMapperMock.toVideoResponse(ArgumentMatchers.any(Video.class))).thenReturn(videoResponse());
+
       Page<VideoResponse> actualVideoResponsePage = categoryService.findVideosByCategoryId(100, DEFAULT_PAGEABLE);
 
       VideoResponse expectedVideoResponse = new VideoResponse(
@@ -157,12 +161,11 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("create must return CategoryResponse when create successfully")
     void create_MustReturnCategoryResponse_WhenCreateSuccessfully() {
-      CategoryRequest categoryRequest = new CategoryRequest("Terror xpto", "f1f1f1");
-
-      BDDMockito.when(mapperMock.map(categoryRequest, Category.class))
-          .thenReturn(CategoryCreator.withoutId());
+      BDDMockito.when(categoryMapperMock.fromCategoryRequest(categoryRequest())).thenReturn(category());
       BDDMockito.when(categoryRepositoryMock.save(ArgumentMatchers.any(Category.class)))
-          .thenReturn(CategoryCreator.withAllParameters());
+          .thenReturn(category());
+
+      CategoryRequest categoryRequest = new CategoryRequest("Terror xpto", "f1f1f1");
 
       CategoryResponse actualCategoryResponse = categoryService.create(categoryRequest);
 
@@ -180,17 +183,19 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("update must return CategoryResponse when update successfully")
     void update_MustReturnCategoryResponse_WhenUpdateSuccessfully() {
-      CategoryRequest categoryRequest = new CategoryRequest("Terror xpto updated", "f1f1f1");
-      Category category = CategoryCreator.from(200, categoryRequest);
+      BDDMockito.when(categoryMapperMock.merge(ArgumentMatchers.any(CategoryRequest.class), ArgumentMatchers.any(Category.class)))
+          .thenReturn(updatedCategory());
+      BDDMockito.when(categoryRepositoryMock.save(ArgumentMatchers.any(Category.class))).thenReturn(updatedCategory());
+      BDDMockito.when(categoryMapperMock.toCategoryResponse(ArgumentMatchers.any(Category.class)))
+          .thenReturn(updatedCategoryResponse());
 
-      BDDMockito.when(categoryRepositoryMock.save(ArgumentMatchers.any(Category.class))).thenReturn(category);
-      BDDMockito.when(mapperMock.map(category, CategoryResponse.class)).thenReturn(CategoryResponseCreator.fromCategory(category));
+      CategoryRequest categoryRequest = new CategoryRequest("New Terror xpto", "f0f0f0");
 
       CategoryResponse actualCategoryResponse = categoryService.update(100, categoryRequest);
 
       Assertions.assertThat(actualCategoryResponse).isNotNull();
-      Assertions.assertThat(actualCategoryResponse.getTitle()).isEqualTo("Terror xpto updated");
-      Assertions.assertThat(actualCategoryResponse.getColor()).isEqualTo("f1f1f1");
+      Assertions.assertThat(actualCategoryResponse.getTitle()).isEqualTo("New Terror xpto");
+      Assertions.assertThat(actualCategoryResponse.getColor()).isEqualTo("f0f0f0");
     }
 
     @Test
@@ -246,6 +251,52 @@ class CategoryServiceImplTest {
           .withMessage("This category has associated videos");
     }
 
+  }
+
+  public Category category() {
+    LocalDateTime created_at = LocalDateTime.parse("2022-11-03T10:00:00");
+    return new Category(100, "Terror xpto", "f1f1f1", created_at, null, true);
+  }
+
+  private Page<Category> categoriesPage() {
+    List<Category> categories = List.of(category());
+    return new PageImpl<>(categories, DEFAULT_PAGEABLE, 1);
+  }
+
+  private CategoryRequest categoryRequest() {
+    return new CategoryRequest("Terror xpto", "f1f1f1");
+  }
+
+  private CategoryResponse categoryResponse() {
+    return new CategoryResponse(100, "Terror xpto", "f1f1f1");
+  }
+
+  private Optional<Category> optionalCategory() {
+    return Optional.of(category());
+  }
+
+  private Category updatedCategory() {
+    LocalDateTime created_at = LocalDateTime.parse("2022-11-03T10:00:00");
+    return new Category(100, "New Terror xpto", "f0f0f0", created_at, null, true);
+  }
+
+  private CategoryResponse updatedCategoryResponse() {
+    return new CategoryResponse(100, "New Terror xpto", "f0f0f0");
+  }
+
+  private Page<Video> videosPage() {
+    LocalDateTime createdAt = LocalDateTime.parse("2022-10-24T10:00:00");
+    Video video = new Video(
+        1000L, "title xpto",
+        "description xpto", "http://www.sitexpto.com", createdAt, new Category(100));
+    List<Video> videos = List.of(video);
+    return new PageImpl<>(videos, DEFAULT_PAGEABLE, 1);
+  }
+
+  private VideoResponse videoResponse() {
+    return new VideoResponse(
+        1000L, "title xpto",
+        "description xpto", "http://www.sitexpto.com", 100);
   }
 
 }

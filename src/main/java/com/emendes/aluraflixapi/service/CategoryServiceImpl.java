@@ -5,11 +5,12 @@ import com.emendes.aluraflixapi.dto.response.CategoryResponse;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.exception.OperationNotAllowedException;
+import com.emendes.aluraflixapi.mapper.CategoryMapper;
+import com.emendes.aluraflixapi.mapper.VideoMapper;
 import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.repository.CategoryRepository;
 import com.emendes.aluraflixapi.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,38 +20,39 @@ import java.time.temporal.ChronoUnit;
 
 @RequiredArgsConstructor
 @Service
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
 
   private final CategoryRepository categoryRepository;
   private final VideoRepository videoRepository;
-  private final ModelMapper mapper;
+  private final CategoryMapper categoryMapper;
+  private final VideoMapper videoMapper;
 
   @Override
   public Page<CategoryResponse> findAll(Pageable pageable) {
     return categoryRepository.findByEnabled(pageable, true)
-        .map(c -> mapper.map(c, CategoryResponse.class));
+        .map(categoryMapper::toCategoryResponse);
   }
 
   @Override
   public CategoryResponse findById(int id) {
-    return mapper.map(findCategoryById(id), CategoryResponse.class);
+    return categoryMapper.toCategoryResponse(findCategoryById(id));
   }
 
   @Override
   public Page<VideoResponse> findVideosByCategoryId(int id, Pageable pageable) {
     Category category = findCategoryById(id);
     return videoRepository.findByCategory(category, pageable)
-        .map(v -> mapper.map(v, VideoResponse.class));
+        .map(videoMapper::toVideoResponse);
   }
 
   @Override
   public CategoryResponse create(CategoryRequest categoryRequest) {
-    Category categoryToBeSaved = mapper.map(categoryRequest, Category.class);
+    Category categoryToBeSaved = categoryMapper.fromCategoryRequest(categoryRequest);
 
     categoryToBeSaved.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
     categoryToBeSaved.setEnabled(true);
 
-    return mapper.map(categoryRepository.save(categoryToBeSaved), CategoryResponse.class);
+    return categoryMapper.toCategoryResponse(categoryRepository.save(categoryToBeSaved));
   }
 
   @Override
@@ -58,10 +60,9 @@ public class CategoryServiceImpl implements CategoryService{
     verifyIfIsCategoryLivre(id);
     Category categoryToBeUpdated = findCategoryById(id);
 
-    categoryToBeUpdated.setTitle(categoryRequest.getTitle());
-    categoryToBeUpdated.setColor(categoryRequest.getColor());
+    categoryToBeUpdated = categoryMapper.merge(categoryRequest, categoryToBeUpdated);
 
-    return mapper.map(categoryRepository.save(categoryToBeUpdated), CategoryResponse.class);
+    return categoryMapper.toCategoryResponse(categoryRepository.save(categoryToBeUpdated));
   }
 
   @Override

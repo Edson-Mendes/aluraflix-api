@@ -5,11 +5,9 @@ import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.exception.CategoryNotFoundException;
 import com.emendes.aluraflixapi.exception.VideoNotFoundException;
 import com.emendes.aluraflixapi.mapper.VideoMapper;
-import com.emendes.aluraflixapi.model.entity.Category;
 import com.emendes.aluraflixapi.model.entity.Video;
 import com.emendes.aluraflixapi.repository.VideoRepository;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,7 +18,7 @@ import java.time.temporal.ChronoUnit;
 
 @AllArgsConstructor
 @Service
-public class VideoServiceImpl implements VideoService{
+public class VideoServiceImpl implements VideoService {
 
   private final VideoRepository videoRepository;
   private final CategoryService categoryService;
@@ -76,6 +74,7 @@ public class VideoServiceImpl implements VideoService{
 
   /**
    * Verifica se o {@code id} informado pertence a uma Category existente e ativa.
+   *
    * @param categoryId id da Category a ser verificada.
    * @throws CategoryNotFoundException se {@code id} não pertence a uma Category existente e ativa.
    */

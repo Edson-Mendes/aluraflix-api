@@ -53,6 +53,7 @@ class VideoServiceImplTest {
     BDDMockito.willThrow(new VideoNotFoundException("Video not found for id: " + 9999L))
         .given(videoRepositoryMock).findById(9999L);
     BDDMockito.when(videoRepositoryMock.findById(1000L)).thenReturn(optionalVideo());
+    BDDMockito.when(mapperMock.toVideoResponse(ArgumentMatchers.any(Video.class))).thenReturn(videoResponse());
   }
 
   @Nested
@@ -62,7 +63,6 @@ class VideoServiceImplTest {
     @Test
     @DisplayName("findAll must return Page<VideoResponse> when Found successfully")
     void findAll_MustReturnPageVideoResponse_WhenFoundSuccessfully() {
-      BDDMockito.when(mapperMock.toVideoResponse(ArgumentMatchers.any(Video.class))).thenReturn(videoResponse());
       BDDMockito.when(videoRepositoryMock.findAll(DEFAULT_PAGEABLE)) // Mock comportamento.
           .thenReturn(VideoCreator.videosPage(DEFAULT_PAGEABLE));
 
@@ -96,8 +96,6 @@ class VideoServiceImplTest {
     @Test
     @DisplayName("findById must return VideoResponse when found by id successfully")
     void findById_MustReturnVideoResponse_WhenFoundByIdSuccessfully() {
-      BDDMockito.when(mapperMock.toVideoResponse(ArgumentMatchers.any(Video.class))).thenReturn(videoResponse());
-
       VideoResponse actualVideoResponse = videoService.findById(1000L);
 
       VideoResponse expectedVideoResponse = new VideoResponse(
@@ -125,7 +123,6 @@ class VideoServiceImplTest {
     @Test
     @DisplayName("findByTitle must return Page<VideoResponse> when Found successfully")
     void findByTitle_MustReturnPageVideoResponse_WhenFoundSuccessfully() {
-      BDDMockito.when(mapperMock.toVideoResponse(ArgumentMatchers.any(Video.class))).thenReturn(videoResponse());
       BDDMockito.when(videoRepositoryMock.findByTitleIgnoreCaseContaining("xpto", DEFAULT_PAGEABLE)) // Mock comportamento.
           .thenReturn(videosPage());
 
@@ -163,7 +160,6 @@ class VideoServiceImplTest {
       BDDMockito.when(categoryService.existsEnabledCategoryWithId(100)).thenReturn(true);
       BDDMockito.when(mapperMock.fromVideoRequest(videoRequest())).thenReturn(videoWithoutIdAndCreatedAt());
       BDDMockito.when(videoRepositoryMock.save(ArgumentMatchers.any(Video.class))).thenReturn(video());
-      BDDMockito.when(mapperMock.toVideoResponse(ArgumentMatchers.any(Video.class))).thenReturn(videoResponse());
 
       VideoRequest videoRequest = new VideoRequest(
           "title xpto", "description xpto", "http://www.sitexpto.com", 100);
