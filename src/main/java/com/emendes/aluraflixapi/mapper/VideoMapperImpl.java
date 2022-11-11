@@ -22,13 +22,6 @@ public class VideoMapperImpl implements VideoMapper {
 
   @Override
   public Video fromVideoRequest(VideoRequest videoRequest) {
-    PropertyMap<VideoRequest, Video> personMap = new PropertyMap<VideoRequest, Video>() {
-      protected void configure() {
-        map().setId(null);
-      }
-    };
-
-    mapper.addMappings(personMap);
     return mapper.map(videoRequest, Video.class);
   }
 
