@@ -249,3 +249,5 @@ Após subir os containers, acesse [localhost:22222/swagger-ui.html](localhost:22
 - [x] Fazer os Controllers/Services interagirem com as Services através de interfaces.
 - [ ] Configurarar CORS.
 - [x] Criação de imagem docker do projeto.
+- [ ] Adicionar SignIn e SignUp.
+- [ ] Acesso a recursos apenas autenticado.
