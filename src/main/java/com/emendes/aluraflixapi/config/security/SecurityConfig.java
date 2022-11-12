@@ -21,9 +21,11 @@ public class SecurityConfig {
   public SecurityFilterChain web(HttpSecurity http) throws Exception {
     http.authorizeRequests()
         .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/favicon.ico")
-        .permitAll();
-    http.httpBasic(withDefaults()).userDetailsService(userDetailsService());
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/auth/signup").permitAll();
     http.authorizeRequests().anyRequest().authenticated();
+
+    http.httpBasic(withDefaults()).userDetailsService(userDetailsService());
     http.csrf().disable();
 
     return http.build();
