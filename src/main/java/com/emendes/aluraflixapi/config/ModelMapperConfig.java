@@ -12,6 +12,8 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
+
 @Configuration
 public class ModelMapperConfig {
 
@@ -35,6 +37,7 @@ public class ModelMapperConfig {
     PropertyMap<UserRequest, User> userMap = new PropertyMap<>() {
       protected void configure() {
         map().setEnabled(true);
+        map().setCreatedAt(LocalDateTime.now());
       }
     };
     mapper.addMappings(userMap);

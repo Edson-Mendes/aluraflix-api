@@ -1,14 +1,16 @@
 package com.emendes.aluraflixapi.model.entity;
 
 import lombok.*;
+import lombok.extern.log4j.Log4j2;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
+@Log4j2
 @Getter
 @Setter
 @AllArgsConstructor
@@ -40,6 +42,12 @@ public class User {
       joinColumns = @JoinColumn(name = "user_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false)
   )
-  private Set<Role> roles;
+  private Set<Role> roles = new HashSet<>();
 
+  public void addRole(Role role) {
+    if (roles == null) {
+      roles = new HashSet<>();
+    }
+    roles.add(role);
+  }
 }
