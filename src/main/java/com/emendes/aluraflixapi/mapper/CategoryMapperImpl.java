@@ -24,19 +24,11 @@ public class CategoryMapperImpl implements CategoryMapper {
 
   @Override
   public Category fromCategoryRequest(CategoryRequest categoryRequest) {
-    PropertyMap<CategoryRequest, Category> personMap = new PropertyMap<>() {
-      protected void configure() {
-        map().setEnabled(true);
-      }
-    };
-
-    mapper.addMappings(personMap);
     return mapper.map(categoryRequest, Category.class);
   }
 
   @Override
   public Category merge(CategoryRequest source, Category destination) {
-    mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
     mapper.map(fromCategoryRequest(source), destination);
     return destination;
   }
