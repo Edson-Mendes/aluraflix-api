@@ -50,8 +50,8 @@ class UserMapperImplTest {
     User expectedUser = User.builder().name("Lorem Ipsum").email("lorem@email.com").password("123456").build();
 
     Assertions.assertThat(actualUser).isNotNull();
+    Assertions.assertThat(actualUser.getCreatedAt()).isNotNull();
     Assertions.assertThat(actualUser.getId()).isNull();
-    Assertions.assertThat(actualUser.getCreatedAt()).isNull();
     Assertions.assertThat(actualUser.getDeletedAt()).isNull();
     Assertions.assertThat(actualUser.isEnabled()).isTrue();
     Assertions.assertThat(actualUser.getName()).isEqualTo(expectedUser.getName());
