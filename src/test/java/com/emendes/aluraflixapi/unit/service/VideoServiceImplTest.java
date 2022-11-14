@@ -22,10 +22,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
@@ -201,7 +198,6 @@ class VideoServiceImplTest {
 
       VideoRequest videoRequest = new VideoRequest(
           "title xpto updated", "description xpto updated", "http://www.sitexpto.com", 100);
-      Video video = VideoCreator.from(1000L, videoRequest);
 
       VideoResponse actualVideoResponse = videoService.update(1000L, videoRequest);
 
@@ -253,6 +249,35 @@ class VideoServiceImplTest {
 
   }
 
+  @Nested
+  @DisplayName("Tests for fetchFirstFive method")
+  class FetchFirstFiveMethod {
+
+    private final Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "createdAt");
+
+    @Test
+    @DisplayName("fetchFirstFive must return List<VideoResponse> when fetch successfully")
+    void fetchFirstFive_MustReturnListVideoResponse_WhenFetchSuccessfully() {
+      BDDMockito.when(videoRepositoryMock.findAll(pageable)).thenReturn(videosPage());
+      BDDMockito.when(mapperMock.toVideoResponse(ArgumentMatchers.any(Video.class))).thenReturn(videoResponse());
+
+      List<VideoResponse> actualListVideoResponse = videoService.fetchFirstFive();
+
+      Assertions.assertThat(actualListVideoResponse).isNotNull().isNotEmpty().hasSize(1);
+    }
+
+    @Test
+    @DisplayName("fetchFirstFive must return empty List when DB do not have videos")
+    void fetchFirstFive_MustReturnEmptyList_WhenDBDoNotHaveVideos() {
+      BDDMockito.when(videoRepositoryMock.findAll(pageable)).thenReturn(Page.empty(pageable));
+
+      List<VideoResponse> actualListVideoResponse = videoService.fetchFirstFive();
+
+      Assertions.assertThat(actualListVideoResponse).isNotNull().isEmpty();
+    }
+
+  }
+
   private Video video() {
     LocalDateTime createdAt = LocalDateTime.parse("2022-10-24T10:00:00");
     return new Video(
@@ -267,8 +292,7 @@ class VideoServiceImplTest {
 
   private Video updatedVideo() {
     LocalDateTime createdAt = LocalDateTime.parse("2022-10-24T10:00:00");
-    return new Video(
-        1000L, "title xpto updated",
+    return new Video(1000L, "title xpto updated",
         "description xpto updated", "http://www.sitexpto.com", createdAt, new Category(100));
   }
 
@@ -277,14 +301,12 @@ class VideoServiceImplTest {
   }
 
   private VideoResponse videoResponse() {
-    return new VideoResponse(
-        1000L, "title xpto",
+    return new VideoResponse(1000L, "title xpto",
         "description xpto", "http://www.sitexpto.com", 100);
   }
 
   private VideoResponse updatedVideoResponse() {
-    return new VideoResponse(
-        1000L, "title xpto updated",
+    return new VideoResponse(1000L, "title xpto updated",
         "description xpto updated", "http://www.sitexpto.com", 100);
   }
 

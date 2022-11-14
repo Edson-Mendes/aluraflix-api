@@ -6,7 +6,6 @@ import com.emendes.aluraflixapi.model.entity.Video;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor

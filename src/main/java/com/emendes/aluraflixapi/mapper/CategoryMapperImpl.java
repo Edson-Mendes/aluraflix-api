@@ -1,14 +1,10 @@
 package com.emendes.aluraflixapi.mapper;
 
 import com.emendes.aluraflixapi.dto.request.CategoryRequest;
-import com.emendes.aluraflixapi.dto.request.VideoRequest;
 import com.emendes.aluraflixapi.dto.response.CategoryResponse;
 import com.emendes.aluraflixapi.model.entity.Category;
-import com.emendes.aluraflixapi.model.entity.Video;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor

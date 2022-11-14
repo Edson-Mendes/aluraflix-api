@@ -185,4 +185,35 @@ class GetVideosIT {
     Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
   }
 
+  @Test
+  @Sql(scripts = {"/video/insert_many_videos.sql"})
+  @DisplayName("get /videos/free must return 200 and List<VideoResponse> when found successfully")
+  void getVideosFree_MustReturn200AndListVideoResponse_WhenFoundSuccessfully() {
+    String uri = VIDEOS_URI+"/free";
+    ResponseEntity<List<VideoResponse>> responseEntity = testRestTemplateNoAuth.exchange(
+        uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+        });
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+    List<VideoResponse> actualBody = responseEntity.getBody();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.OK);
+    Assertions.assertThat(actualBody).isNotNull().isNotEmpty().hasSize(5);
+  }
+
+  @Test
+  @DisplayName("get /videos/free must return 200 and empty List when DB do not have videos")
+  void getVideosFree_MustReturn200AndEmptyList_WhenDBDoNotHaveVideos() {
+    String uri = VIDEOS_URI+"/free";
+    ResponseEntity<List<VideoResponse>> responseEntity = testRestTemplateNoAuth.exchange(
+        uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
+        });
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+    List<VideoResponse> actualBody = responseEntity.getBody();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.OK);
+    Assertions.assertThat(actualBody).isNotNull().isEmpty();
+  }
+
 }

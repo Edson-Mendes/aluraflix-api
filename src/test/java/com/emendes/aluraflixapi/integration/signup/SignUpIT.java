@@ -1,6 +1,5 @@
 package com.emendes.aluraflixapi.integration.signup;
 
-import com.emendes.aluraflixapi.dto.request.CategoryRequest;
 import com.emendes.aluraflixapi.dto.request.UserRequest;
 import com.emendes.aluraflixapi.dto.response.ExceptionDetails;
 import com.emendes.aluraflixapi.dto.response.UserResponse;
