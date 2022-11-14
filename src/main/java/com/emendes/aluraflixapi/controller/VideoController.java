@@ -18,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
-@Log4j2
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/videos")
@@ -32,7 +31,6 @@ public class VideoController implements VideoControllerSwagger {
       @RequestParam(name = "search", required = false) String title,
       @PageableDefault Pageable pageable) {
     Page<VideoResponse> pageVideoResponse;
-    log.info(title);
     if (title == null) {
       pageVideoResponse = videoService.findAll(pageable);
     } else {

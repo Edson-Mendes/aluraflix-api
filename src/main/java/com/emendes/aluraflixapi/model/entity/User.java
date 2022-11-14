@@ -1,16 +1,16 @@
 package com.emendes.aluraflixapi.model.entity;
 
 import lombok.*;
-import lombok.extern.log4j.Log4j2;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
-@Log4j2
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,7 +19,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "tb_user")
-public class User {
+public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public class User {
       joinColumns = @JoinColumn(name = "user_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false)
   )
-  private Set<Role> roles = new HashSet<>();
+  private Collection<Role> roles;
 
   public void addRole(Role role) {
     if (roles == null) {
@@ -51,4 +51,28 @@ public class User {
     roles.add(role);
   }
 
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return this.roles;
+  }
+
+  @Override
+  public String getUsername() {
+    return this.email;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return this.enabled;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
 }

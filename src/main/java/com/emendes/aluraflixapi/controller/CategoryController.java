@@ -6,19 +6,16 @@ import com.emendes.aluraflixapi.dto.response.CategoryResponse;
 import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import com.emendes.aluraflixapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
 
-@Log4j2
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/categories")
@@ -28,9 +25,9 @@ public class CategoryController implements CategoryControllerSwagger {
 
   @Override
   @GetMapping
+//  TODO: Alterar o valor default de size do pageable
+//  E alterar nos testes
   public Page<CategoryResponse> findAll(@PageableDefault Pageable pageable) {
-    String pass = new BCryptPasswordEncoder().encode("123456");
-    log.info("Aqui está a senha {}", pass);
     return categoryService.findAll(pageable);
   }
 
