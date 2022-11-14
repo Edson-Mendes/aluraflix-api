@@ -25,6 +25,9 @@ class DeleteVideosIT {
   @Autowired
   @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
+  @Autowired
+  @Qualifier("withoutAuthorizationHeader")
+  private TestRestTemplate testRestTemplateNoAuth;
 
   private final String VIDEOS_URI_TEMPLATE = "/videos/%s";
 
@@ -79,6 +82,19 @@ class DeleteVideosIT {
     Assertions.assertThat(actualBody.getTitle()).isEqualTo("Failed to convert");
     Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/videos/1o");
+  }
+
+  @Test
+  @DisplayName("delete /videos/{id} must return 401 when client is not authenticated")
+  void deleteVideosId_MustReturn401_WhenClientIsNotAuthenticated() {
+    String uri = String.format(VIDEOS_URI_TEMPLATE, "1");
+
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
   }
 
 }

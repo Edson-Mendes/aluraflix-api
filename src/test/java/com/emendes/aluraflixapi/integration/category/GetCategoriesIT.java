@@ -31,6 +31,9 @@ class GetCategoriesIT {
   @Autowired
   @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
+  @Autowired
+  @Qualifier("withoutAuthorizationHeader")
+  private TestRestTemplate testRestTemplateNoAuth;
 
   private final String CATEGORIES_URI = "/categories";
 
@@ -39,7 +42,6 @@ class GetCategoriesIT {
   @DisplayName("get /categories must return 200 and Page<CategoryResponse> when found only enable categories")
   void getCategories_MustReturn200AndPageCategoryResponse_WhenFoundCategoriesSuccessfully() {
     ResponseEntity<PageableResponse<CategoryResponse>> responseEntity = testRestTemplate
-//        .withBasicAuth("lorem@email.com", "123456")
         .exchange(CATEGORIES_URI, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
 
     HttpStatus actualStatus = responseEntity.getStatusCode();
@@ -175,4 +177,42 @@ class GetCategoriesIT {
     Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/categories/1oo/videos");
   }
+
+  @Test
+  @DisplayName("get /categories must return 401 when client is not authenticated")
+  void getCategories_MustReturn401_WhenClientIsNotAuthenticated() {
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        CATEGORIES_URI, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
+  }
+
+  @Test
+  @DisplayName("get /categories/{id} must return 401 when client is not authenticated")
+  void getCategoriesId_MustReturn401_WhenClientIsNotAuthenticated() {
+    String uri = CATEGORIES_URI + "/1";
+
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
+  }
+
+  @Test
+  @DisplayName("get /categories/{id}/videos must return 401 when client is not authenticated")
+  void getCategoriesIdVideos_MustReturn401_WhenClientIsNotAuthenticated() {
+    String uri = CATEGORIES_URI + "/1/videos";
+
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
+  }
+
 }

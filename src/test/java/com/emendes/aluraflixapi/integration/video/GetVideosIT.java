@@ -27,6 +27,9 @@ class GetVideosIT {
   @Autowired
   @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
+  @Autowired
+  @Qualifier("withoutAuthorizationHeader")
+  private TestRestTemplate testRestTemplateNoAuth;
 
   private final String VIDEOS_URI = "/videos";
 
@@ -154,6 +157,30 @@ class GetVideosIT {
     Assertions.assertThat(actualBody.getTitle()).isEqualTo("Failed to convert");
     Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/videos/1o");
+  }
+
+  @Test
+  @DisplayName("get /videos must return 401 when client is not authenticated")
+  void getVideos_MustReturn401_WhenClientIsNotAuthenticated() {
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        VIDEOS_URI, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
+  }
+
+  @Test
+  @DisplayName("get /videos/{id} must return 401 when client is not authenticated")
+  void getVideosId_MustReturn401_WhenClientIsNotAuthenticated() {
+    String uri = VIDEOS_URI+"/10";
+
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
   }
 
 }

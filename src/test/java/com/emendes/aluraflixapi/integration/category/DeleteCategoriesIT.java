@@ -24,7 +24,10 @@ class DeleteCategoriesIT {
 
   @Autowired
   @Qualifier("withAuthorizationHeader")
-  private TestRestTemplate testRestTemplate;
+  private TestRestTemplate testRestTemplateWithAuth;
+  @Autowired
+  @Qualifier("withoutAuthorizationHeader")
+  private TestRestTemplate testRestTemplateNoAuth;
 
   private final String CATEGORIES_URI_TEMPLATE = "/categories/%s";
 
@@ -34,7 +37,7 @@ class DeleteCategoriesIT {
   void deleteCategoriesId_MustReturn204_WhenDeleteSuccessfully() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, 2);
 
-    ResponseEntity<Void> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<Void> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
 
     HttpStatus actualStatus = responseEntity.getStatusCode();
@@ -48,7 +51,7 @@ class DeleteCategoriesIT {
   void deleteCategoriesId_MustReturn404AndExceptionDetails_WhenCategoryDoesNotExist() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, 999);
 
-    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
 
     HttpStatus actualStatus = responseEntity.getStatusCode();
@@ -68,7 +71,7 @@ class DeleteCategoriesIT {
   void deleteCategoriesId_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, "1o");
 
-    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
 
     HttpStatus actualStatus = responseEntity.getStatusCode();
@@ -87,7 +90,7 @@ class DeleteCategoriesIT {
   void deleteCategoriesId_MustReturn400AndExceptionDetails_WhenTryDeleteCategoryWithId1() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, 1);
 
-    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
 
     HttpStatus actualStatus = responseEntity.getStatusCode();
@@ -107,7 +110,7 @@ class DeleteCategoriesIT {
   void deleteCategoriesId_MustReturn400AndExceptionDetails_WhenDeleteCategoryThatHasAssociatedVideos() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, 200);
 
-    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
 
     HttpStatus actualStatus = responseEntity.getStatusCode();
@@ -119,6 +122,19 @@ class DeleteCategoriesIT {
     Assertions.assertThat(actualBody.getDetails()).isEqualTo("This category has associated videos");
     Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/categories/200");
+  }
+
+  @Test
+  @DisplayName("delete /categories/{id} must return 401 when client is not authenticated")
+  void deleteCategoriesId_MustReturn401_WhenClientIsNotAuthenticated() {
+    String uri = String.format(CATEGORIES_URI_TEMPLATE, 2);
+
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
   }
 
 }

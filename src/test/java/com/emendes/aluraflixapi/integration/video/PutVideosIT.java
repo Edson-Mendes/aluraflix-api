@@ -29,6 +29,9 @@ class PutVideosIT {
   @Autowired
   @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
+  @Autowired
+  @Qualifier("withoutAuthorizationHeader")
+  private TestRestTemplate testRestTemplateNoAuth;
 
   private final String VIDEOS_URI_TEMPLATE = "/videos/%s";
   private final VideoRequest VALID_VIDEO_REQUEST = new VideoRequest("Vídeo", "Descrição",
@@ -143,6 +146,22 @@ class PutVideosIT {
     Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
     Assertions.assertThat(actualBody.getDetails()).isEqualTo("Category not found for id: 100");
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/videos/1");
+  }
+
+  @Test
+  @DisplayName("put /videos/{id} must return 401 when client is not authenticated")
+  void putVideosId_MustReturn401_WhenClientIsNotAuthenticated() {
+    String uri = String.format(VIDEOS_URI_TEMPLATE, 1);
+    VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum update",
+        "Descrição xpto sobre o vídeo update", "http://www.xpto.com/fe23ac5", 1);
+    HttpEntity<VideoRequest> requestEntity = new HttpEntity<>(videoRequest);
+
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        uri, HttpMethod.DELETE, requestEntity, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
   }
 
 }

@@ -29,6 +29,9 @@ class PutCategoriesIT {
   @Autowired
   @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
+  @Autowired
+  @Qualifier("withoutAuthorizationHeader")
+  private TestRestTemplate testRestTemplateNoAuth;
 
   private final String CATEGORIES_URI = "/categories/%s";
   private final CategoryRequest VALID_CATEGORY_REQUEST = new CategoryRequest("Sad XPTO", "c3c3c3");
@@ -137,6 +140,21 @@ class PutCategoriesIT {
     Assertions.assertThat(actualBody.getStatus()).isEqualTo(400);
     Assertions.assertThat(actualBody.getDetails()).isEqualTo("Change/delete 'Livre' category not allowed");
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/categories/1");
+  }
+
+  @Test
+  @DisplayName("put /categories/{id} must return 401 when client is not authenticated")
+  void putCategoriesId_MustReturn401_WhenClientIsNotAuthenticated() {
+    String uri = String.format(CATEGORIES_URI, 2);
+    CategoryRequest categoryRequest = new CategoryRequest("Terror XPTO", "808080");
+    HttpEntity<CategoryRequest> requestEntity = new HttpEntity<>(categoryRequest);
+
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        uri, HttpMethod.DELETE, requestEntity, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
   }
 
 }

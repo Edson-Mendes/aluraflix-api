@@ -29,6 +29,9 @@ class PostCategoriesIT {
   @Autowired
   @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
+  @Autowired
+  @Qualifier("withoutAuthorizationHeader")
+  private TestRestTemplate testRestTemplateNoAuth;
 
   private final String CATEGORIES_URI = "/categories";
 
@@ -92,6 +95,20 @@ class PostCategoriesIT {
     Assertions.assertThat(actualBody.getTitle()).isEqualTo("Data conflict");
     Assertions.assertThat(actualBody.getStatus()).isEqualTo(409);
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/categories");
+  }
+
+  @Test
+  @DisplayName("post /categories must return 401 when client is not authenticated")
+  void postCategories_MustReturn401_WhenClientIsNotAuthenticated() {
+    CategoryRequest categoryRequest = new CategoryRequest("Sad xpto", "808080");
+    HttpEntity<CategoryRequest> requestEntity = new HttpEntity<>(categoryRequest);
+
+    ResponseEntity<Void> responseEntity = testRestTemplateNoAuth.exchange(
+        CATEGORIES_URI, HttpMethod.DELETE, requestEntity, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
   }
 
 }
