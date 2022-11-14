@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,13 +27,14 @@ import org.springframework.test.context.jdbc.Sql;
 class PutCategoriesIT {
 
   @Autowired
+  @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
 
   private final String CATEGORIES_URI = "/categories/%s";
   private final CategoryRequest VALID_CATEGORY_REQUEST = new CategoryRequest("Sad XPTO", "c3c3c3");
 
   @Test
-  @Sql(scripts = {"/category/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("put /categories/{id} must return 200 and CategoryResponse when update successfully")
   void putCategoriesId_MustReturn200AndCategoryResponse_WhenUpdateSuccessfully() {
     String uri = String.format(CATEGORIES_URI, 2);
@@ -52,6 +54,7 @@ class PutCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("put /categories/{id} must return 404 and ExceptionDetails when category does not exist")
   void putCategoriesId_MustReturn404AndExceptionDetails_WhenCategoryDoesNotExist() {
     String uri = String.format(CATEGORIES_URI, 999);
@@ -72,6 +75,7 @@ class PutCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("put /categories/{id} must return 400 and ExceptionDetails when id is invalid")
   void putCategoriesId_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
     String uri = String.format(CATEGORIES_URI, "1o");
@@ -91,7 +95,7 @@ class PutCategoriesIT {
   }
 
   @Test
-  @Sql(scripts = {"/category/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("put /categories/{id} must return 400 and ValidationExceptionDetails when request body has invalid fields")
   void putCategoriesId_MustReturn400AndValidationExceptionDetails_WhenRequestBodyHasInvalidFields() {
     String uri = String.format(CATEGORIES_URI, 2);
@@ -115,6 +119,7 @@ class PutCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("put /categories/{id} must return 400 and ExceptionDetails when try update category with id 1")
   void putCategoriesId_MustReturn400AndExceptionDetails_WhenTryUpdateCategoryWithId1() {
     String uri = String.format(CATEGORIES_URI, 1);

@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,12 +27,13 @@ import org.springframework.test.context.jdbc.Sql;
 class PostVideosIT {
 
   @Autowired
+  @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
 
   private final String VIDEOS_URI = "/videos";
 
   @Test
-  @Sql(scripts = {"/category/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("post /videos must return 201 and VideoResponse when create successfully")
   void postVideos_MustReturn201AndVideoResponse_WhenCreateSuccessfully() {
     VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum", "Descrição xpto sobre o vídeo",
@@ -52,6 +54,7 @@ class PostVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("post /videos must return 201 and VideoResponse when send null categoryId")
   void postVideos_MustReturn201AndVideoResponse_WhenSendNullCategoryId() {
     VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum", "Descrição xpto sobre o vídeo",
@@ -72,6 +75,7 @@ class PostVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("post /videos must return 400 and ValidationExceptionDetails when request body has invalid fields")
   void postVideos_MustReturn400AndValidationExceptionDetails_WhenRequestBodyHasInvalidFields() {
     VideoRequest videoRequest = new VideoRequest("", null,
@@ -94,7 +98,7 @@ class PostVideosIT {
   }
 
   @Test
-  @Sql(scripts = {"/category/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("post /videos must return 404 and ExceptionDetails when categoryId references deleted Category")
   void postVideos_MustReturn404AndExceptionDetails_WhenCategoryIdReferencesDeletedCategory() {
     VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum", "Descrição xpto sobre o vídeo",

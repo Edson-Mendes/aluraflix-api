@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,11 +27,13 @@ import org.springframework.test.context.jdbc.Sql;
 class PostCategoriesIT {
 
   @Autowired
+  @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
 
   private final String CATEGORIES_URI = "/categories";
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("post /categories must return 201 and CategoryResponse when create successfully")
   void postCategories_MustReturn201AndCategoryResponse_WhenCreateSuccessfully() {
     CategoryRequest categoryRequest = new CategoryRequest("Sad xpto", "808080");
@@ -49,6 +52,7 @@ class PostCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("post /categories must return 400 and ValidationExceptionDetails when request body has invalid fields")
   void postCategories_MustReturn400AndValidationExceptionDetails_WhenRequestBodyHasInvalidFields() {
     CategoryRequest categoryRequest = new CategoryRequest("", "8080gg0");
@@ -71,7 +75,7 @@ class PostCategoriesIT {
   }
 
   @Test
-  @Sql(scripts = {"/category/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("post /categories must return 409 and ExceptionDetails when already exists category with given title")
   void postCategories_MustReturn409AndExceptionDetails_WhenAlreadyExistsCategoryWithGivenTitle() {
     CategoryRequest categoryRequest = new CategoryRequest("Terror", "808080");

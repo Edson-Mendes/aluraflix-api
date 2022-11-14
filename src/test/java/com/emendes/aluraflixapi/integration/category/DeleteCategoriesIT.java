@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,12 +23,13 @@ import org.springframework.test.context.jdbc.Sql;
 class DeleteCategoriesIT {
 
   @Autowired
+  @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
 
   private final String CATEGORIES_URI_TEMPLATE = "/categories/%s";
 
   @Test
-  @Sql(scripts = {"/category/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("delete /categories/{id} must return 204 when delete successfully")
   void deleteCategoriesId_MustReturn204_WhenDeleteSuccessfully() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, 2);
@@ -41,6 +43,7 @@ class DeleteCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("delete /categories/{id} must return 404 and ExceptionDetails when category does not exist")
   void deleteCategoriesId_MustReturn404AndExceptionDetails_WhenCategoryDoesNotExist() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, 999);
@@ -60,6 +63,7 @@ class DeleteCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("delete /categories/{id} must return 400 and ExceptionDetails when id is invalid")
   void deleteCategoriesId_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, "1o");
@@ -78,6 +82,7 @@ class DeleteCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("delete /categories/{id} must return 400 and ExceptionDetails when try delete category with id 1")
   void deleteCategoriesId_MustReturn400AndExceptionDetails_WhenTryDeleteCategoryWithId1() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, 1);
@@ -97,7 +102,7 @@ class DeleteCategoriesIT {
   }
 
   @Test
-  @Sql(scripts = {"/category/insert-category-and-video.sql"})
+  @Sql(scripts = {"/category/insert-category-and-video.sql", "/user/insert.sql"})
   @DisplayName("delete /categories/{id} must return 400 and ExceptionDetails when delete category that has associated videos")
   void deleteCategoriesId_MustReturn400AndExceptionDetails_WhenDeleteCategoryThatHasAssociatedVideos() {
     String uri = String.format(CATEGORIES_URI_TEMPLATE, 200);

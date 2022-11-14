@@ -8,6 +8,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,6 +27,7 @@ import org.springframework.test.context.jdbc.Sql;
 class PutVideosIT {
 
   @Autowired
+  @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
 
   private final String VIDEOS_URI_TEMPLATE = "/videos/%s";
@@ -33,7 +35,7 @@ class PutVideosIT {
       "http://www.xpto.com/fe23ac5", 1);
 
   @Test
-  @Sql(scripts = {"/video/insert.sql"})
+  @Sql(scripts = {"/video/insert.sql", "/user/insert.sql"})
   @DisplayName("put /videos/{id} must return 200 and VideoResponse when update successfully")
   void putVideosId_MustReturn200AndVideoResponse_WhenUpdateSuccessfully() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, 1);
@@ -55,6 +57,7 @@ class PutVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("put /videos/{id} must return 404 and ExceptionDetails when video does not exist")
   void putVideosId_MustReturn404AndExceptionDetails_WhenVideoDoesNotExist() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, 999);
@@ -75,6 +78,7 @@ class PutVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("put /videos/{id} must return 400 and ValidationExceptionDetails when request body has invalid fields")
   void putVideosId_MustReturn400AndValidationExceptionDetails_WhenRequestBodyHasInvalidFields() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, 1);
@@ -99,6 +103,7 @@ class PutVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("put /videos/{id} must return 400 and ExceptionDetails when id is invalid")
   void putVideosId_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, "1o");
@@ -118,7 +123,7 @@ class PutVideosIT {
   }
 
   @Test
-  @Sql(scripts = {"/category/insert.sql", "/video/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/video/insert.sql", "/user/insert.sql"})
   @DisplayName("put /videos/{id} must return 400 and ExceptionDetails when categoryId references deleted Category")
   void putVideosId_MustReturn400AndExceptionDetails_WhenCategoryIdReferencesDeletedCategory() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, 1);

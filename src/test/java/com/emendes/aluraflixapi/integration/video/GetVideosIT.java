@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,12 +25,13 @@ import org.springframework.test.context.jdbc.Sql;
 class GetVideosIT {
 
   @Autowired
+  @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
 
   private final String VIDEOS_URI = "/videos";
 
   @Test
-  @Sql(scripts = {"/video/insert.sql"})
+  @Sql(scripts = {"/video/insert.sql", "/user/insert.sql"})
   @DisplayName("get /videos must return 200 and Page<VideoResponse> when found videos successfully")
   void getVideos_MustReturn200AndPageVideoResponse_WhenFoundVideosSuccessfully() {
     ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplate.exchange(
@@ -47,6 +49,7 @@ class GetVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("get /videos must return 200 and empty Page when DB has no videos")
   void getVideos_MustReturn200AndEmptyPage_WhenDBHasNoVideos() {
     ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplate.exchange(
@@ -61,7 +64,7 @@ class GetVideosIT {
   }
 
   @Test
-  @Sql(scripts = {"/video/insert.sql"})
+  @Sql(scripts = {"/video/insert.sql", "/user/insert.sql"})
   @DisplayName("get /videos?search=xpto must return 200 and Page<VideoResponse> when found videos successfully")
   void getVideosWithParamSearch_MustReturn200AndPageVideoResponse_WhenFoundVideosSuccessfully() {
     String uri = VIDEOS_URI+"?search=xpto";
@@ -80,7 +83,7 @@ class GetVideosIT {
   }
 
   @Test
-  @Sql(scripts = {"/video/insert.sql"})
+  @Sql(scripts = {"/video/insert.sql", "/user/insert.sql"})
   @DisplayName("get /videos?search=lorem must return 200 and empty Page when DB has no videos with given title")
   void getVideosWithParamSearch_MustReturn200AndEmptyPage_WhenDBHasNoVideoswithGivenTitle() {
     String uri = VIDEOS_URI+"?search=lorem";
@@ -96,7 +99,7 @@ class GetVideosIT {
   }
 
   @Test
-  @Sql(scripts = {"/video/insert.sql"})
+  @Sql(scripts = {"/video/insert.sql", "/user/insert.sql"})
   @DisplayName("get /videos/{id} must return 200 and VideoResponse when found video successfully")
   void getVideosId_MustReturn200AndPageVideoResponse_WhenFoundSuccessfully() {
     String uri = VIDEOS_URI+"/1";
@@ -115,6 +118,7 @@ class GetVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("get /videos/{id} must return 404 and ExceptionDetails when not found video")
   void getVideosId_MustReturn404AndExceptionDetails_WhenNotFoundVideo() {
     String uri = VIDEOS_URI+"/1";
@@ -134,6 +138,7 @@ class GetVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("get /videos/{id} must return 400 and ExceptionDetails when id is invalid")
   void getVideosId_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
     String uri = VIDEOS_URI+"/1o";

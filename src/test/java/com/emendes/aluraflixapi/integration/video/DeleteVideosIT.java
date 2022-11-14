@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,12 +23,13 @@ import org.springframework.test.context.jdbc.Sql;
 class DeleteVideosIT {
 
   @Autowired
+  @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
 
   private final String VIDEOS_URI_TEMPLATE = "/videos/%s";
 
   @Test
-  @Sql(scripts = {"/video/insert.sql"})
+  @Sql(scripts = {"/video/insert.sql", "/user/insert.sql"})
   @DisplayName("delete /videos/{id} must return 204 when delete successfully")
   void deleteVideosId_MustReturn204_WhenDeleteSuccessfully() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, 1);
@@ -41,6 +43,7 @@ class DeleteVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("delete /videos/{id} must return 404 and ExceptionDetails when video does not exist")
   void deleteVideosId_MustReturn404AndExceptionDetails_WhenVideoDoesNotExist() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, 999);
@@ -60,6 +63,7 @@ class DeleteVideosIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("delete /videos/{id} must return 400 and ExceptionDetails when id is invalid")
   void deleteVideosId_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
     String uri = String.format(VIDEOS_URI_TEMPLATE, "1o");

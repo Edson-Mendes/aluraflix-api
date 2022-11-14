@@ -8,9 +8,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,16 +29,18 @@ import java.util.List;
 class GetCategoriesIT {
 
   @Autowired
+  @Qualifier("withAuthorizationHeader")
   private TestRestTemplate testRestTemplate;
 
   private final String CATEGORIES_URI = "/categories";
 
   @Test
-  @Sql(scripts = {"/category/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("get /categories must return 200 and Page<CategoryResponse> when found only enable categories")
   void getCategories_MustReturn200AndPageCategoryResponse_WhenFoundCategoriesSuccessfully() {
-    ResponseEntity<PageableResponse<CategoryResponse>> responseEntity = testRestTemplate.exchange(
-        CATEGORIES_URI, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+    ResponseEntity<PageableResponse<CategoryResponse>> responseEntity = testRestTemplate
+//        .withBasicAuth("lorem@email.com", "123456")
+        .exchange(CATEGORIES_URI, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
 
     HttpStatus actualStatus = responseEntity.getStatusCode();
     PageableResponse<CategoryResponse> actualBody = responseEntity.getBody();
@@ -50,7 +54,7 @@ class GetCategoriesIT {
   }
 
   @Test
-  @Sql(scripts = {"/category/insert.sql"})
+  @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("get /categories/{id} must return 200 and CategoryResponse when found category successfully")
   void getCategoriesId_MustReturn200AndPageCategoryResponse_WhenFoundSuccessfully() {
     String uri = CATEGORIES_URI + "/2";
@@ -67,6 +71,7 @@ class GetCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("get /categories/{id} must return 404 and ExceptionDetails when not found category")
   void getCategoriesId_MustReturn404AndExceptionDetails_WhenNotFoundCategory() {
     String uri = CATEGORIES_URI + "/100";
@@ -85,6 +90,7 @@ class GetCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("get /categories/{id} must return 400 and ExceptionDetails when id is invalid")
   void getCategoriesId_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
     String uri = CATEGORIES_URI + "/1o";
@@ -102,7 +108,7 @@ class GetCategoriesIT {
   }
 
   @Test
-  @Sql(scripts = {"/video/insert.sql"})
+  @Sql(scripts = {"/video/insert.sql", "/user/insert.sql"})
   @DisplayName("get /categories/{id}/videos must return 200 and Page<VideosResponse> when found Videos successfully")
   void getCategoriesIdVideos_MustReturn200AndPageVideoResponse_WhenFoundVideosSuccessfully() {
     String uri = CATEGORIES_URI + "/1/videos";
@@ -119,6 +125,7 @@ class GetCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("get /categories/{id}/videos must return 200 and empty Page when not found Videos with given categoryId")
   void getCategoriesIdVideos_MustReturn200AndEmptyPage_WhenNotFoundVideosWithGivenCategoryId() {
     String uri = CATEGORIES_URI + "/1/videos";
@@ -133,6 +140,7 @@ class GetCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("get /categories/{id}/videos must return 404 and ExceptionDetails when not found category")
   void getCategoriesIdVideos_MustReturn404AndExceptionDetails_WhenNotFoundCategory() {
     String uri = CATEGORIES_URI + "/100/videos";
@@ -151,6 +159,7 @@ class GetCategoriesIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("get /categories/{id}/videos must return 400 and ExceptionDetails when id is invalid")
   void getCategoriesIdVideos_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
     String uri = CATEGORIES_URI + "/1oo/videos";
