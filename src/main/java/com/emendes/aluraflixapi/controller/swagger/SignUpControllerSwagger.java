@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @OpenAPIDefinition(tags = @Tag(name = "Authentication"))
-public interface AuthenticationControllerSwagger {
+public interface SignUpControllerSwagger {
 
   @Operation(summary = "Criar usuário", tags = {"Authentication"})
   @ApiResponses(value = {

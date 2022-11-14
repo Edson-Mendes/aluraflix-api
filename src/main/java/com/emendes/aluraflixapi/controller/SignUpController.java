@@ -1,9 +1,9 @@
 package com.emendes.aluraflixapi.controller;
 
-import com.emendes.aluraflixapi.controller.swagger.AuthenticationControllerSwagger;
+import com.emendes.aluraflixapi.controller.swagger.SignUpControllerSwagger;
 import com.emendes.aluraflixapi.dto.request.UserRequest;
 import com.emendes.aluraflixapi.dto.response.UserResponse;
-import com.emendes.aluraflixapi.service.AuthenticationService;
+import com.emendes.aluraflixapi.service.SignUpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,15 +18,15 @@ import java.net.URI;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
-public class AuthenticationController implements AuthenticationControllerSwagger {
+public class SignUpController implements SignUpControllerSwagger {
 
-  private final AuthenticationService authenticationService;
+  private final SignUpService signUpService;
 
   @Override
   @PostMapping("/signup")
   public ResponseEntity<UserResponse> signUp(
       @RequestBody @Valid UserRequest userRequest, UriComponentsBuilder uriBuilder) {
-    UserResponse userResponse = authenticationService.signUp(userRequest);
+    UserResponse userResponse = signUpService.signUp(userRequest);
     URI uri = uriBuilder.path("/users/{id}").build(userResponse.getId());
     return ResponseEntity.created(uri).body(userResponse);
   }

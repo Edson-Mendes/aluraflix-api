@@ -7,7 +7,7 @@ import com.emendes.aluraflixapi.mapper.UserMapper;
 import com.emendes.aluraflixapi.model.entity.Role;
 import com.emendes.aluraflixapi.model.entity.User;
 import com.emendes.aluraflixapi.repository.UserRepository;
-import com.emendes.aluraflixapi.service.AuthenticationServiceImpl;
+import com.emendes.aluraflixapi.service.SignUpServiceImpl;
 import com.emendes.aluraflixapi.service.RoleService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -26,10 +26,10 @@ import java.time.LocalDateTime;
 
 @ExtendWith(SpringExtension.class)
 @DisplayName("Unit tests for AuthenticationService")
-class AuthenticationServiceImplTest {
+class SignUpServiceImplTest {
 
   @InjectMocks
-  private AuthenticationServiceImpl authenticationService;
+  private SignUpServiceImpl signUpService;
   @Mock
   private UserRepository userRepositoryMock;
   @Mock
@@ -55,7 +55,7 @@ class AuthenticationServiceImplTest {
     UserResponse userResponse = new UserResponse(100000L, "Lorem Ipsum", "lorem@email.com");
     BDDMockito.when(userMapperMock.toUserResponse(ArgumentMatchers.any(User.class))).thenReturn(userResponse);
 
-    UserResponse actualUserResponse = authenticationService.signUp(userRequest);
+    UserResponse actualUserResponse = signUpService.signUp(userRequest);
     UserResponse expectedUserResponse = new UserResponse(100000L, "Lorem Ipsum", "lorem@email.com");
 
     Assertions.assertThat(actualUserResponse).isNotNull().isEqualTo(expectedUserResponse);
@@ -73,7 +73,7 @@ class AuthenticationServiceImplTest {
         .given(roleServiceMock).getDefaultRole();
 
     Assertions.assertThatExceptionOfType(RoleNotFoundException.class)
-        .isThrownBy(() -> authenticationService.signUp(userRequest))
+        .isThrownBy(() -> signUpService.signUp(userRequest))
         .withMessage("Role not found");
   }
 
@@ -92,7 +92,7 @@ class AuthenticationServiceImplTest {
         .given(userRepositoryMock).save(ArgumentMatchers.any(User.class));
 
     Assertions.assertThatExceptionOfType(DataIntegrityViolationException.class)
-        .isThrownBy(() -> authenticationService.signUp(userRequest))
+        .isThrownBy(() -> signUpService.signUp(userRequest))
         .withMessage("f_email_unique constraint");
   }
 
