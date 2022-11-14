@@ -5,6 +5,8 @@ import com.emendes.aluraflixapi.dto.response.VideoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface VideoService {
 
   Page<VideoResponse> findAll(Pageable pageable);
@@ -19,4 +21,5 @@ public interface VideoService {
 
   void deleteById(long id);
 
+  List<VideoResponse> fetchFirstFive();
 }

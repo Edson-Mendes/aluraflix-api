@@ -8,13 +8,13 @@ import com.emendes.aluraflixapi.mapper.VideoMapper;
 import com.emendes.aluraflixapi.model.entity.Video;
 import com.emendes.aluraflixapi.repository.VideoRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -39,6 +39,13 @@ public class VideoServiceImpl implements VideoService {
   public Page<VideoResponse> findByTitle(String title, Pageable pageable) {
     return videoRepository.findByTitleIgnoreCaseContaining(title, pageable)
         .map(videoMapper::toVideoResponse);
+  }
+
+  @Override
+  public List<VideoResponse> fetchFirstFive() {
+    Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "createdAt");
+    List<Video> videos = videoRepository.findAll(pageable).stream().toList();
+    return videos.stream().map(videoMapper::toVideoResponse).toList();
   }
 
   @Override

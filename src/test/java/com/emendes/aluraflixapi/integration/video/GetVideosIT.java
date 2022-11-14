@@ -18,6 +18,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -26,7 +28,7 @@ class GetVideosIT {
 
   @Autowired
   @Qualifier("withAuthorizationHeader")
-  private TestRestTemplate testRestTemplate;
+  private TestRestTemplate testRestTemplateWithAuth;
   @Autowired
   @Qualifier("withoutAuthorizationHeader")
   private TestRestTemplate testRestTemplateNoAuth;
@@ -37,7 +39,7 @@ class GetVideosIT {
   @Sql(scripts = {"/video/insert.sql", "/user/insert.sql"})
   @DisplayName("get /videos must return 200 and Page<VideoResponse> when found videos successfully")
   void getVideos_MustReturn200AndPageVideoResponse_WhenFoundVideosSuccessfully() {
-    ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplateWithAuth.exchange(
         VIDEOS_URI, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
 
@@ -55,7 +57,7 @@ class GetVideosIT {
   @Sql(scripts = {"/user/insert.sql"})
   @DisplayName("get /videos must return 200 and empty Page when DB has no videos")
   void getVideos_MustReturn200AndEmptyPage_WhenDBHasNoVideos() {
-    ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplateWithAuth.exchange(
         VIDEOS_URI, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
 
@@ -71,7 +73,7 @@ class GetVideosIT {
   @DisplayName("get /videos?search=xpto must return 200 and Page<VideoResponse> when found videos successfully")
   void getVideosWithParamSearch_MustReturn200AndPageVideoResponse_WhenFoundVideosSuccessfully() {
     String uri = VIDEOS_URI+"?search=xpto";
-    ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
 
@@ -90,7 +92,7 @@ class GetVideosIT {
   @DisplayName("get /videos?search=lorem must return 200 and empty Page when DB has no videos with given title")
   void getVideosWithParamSearch_MustReturn200AndEmptyPage_WhenDBHasNoVideoswithGivenTitle() {
     String uri = VIDEOS_URI+"?search=lorem";
-    ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<PageableResponse<VideoResponse>> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
 
@@ -106,7 +108,7 @@ class GetVideosIT {
   @DisplayName("get /videos/{id} must return 200 and VideoResponse when found video successfully")
   void getVideosId_MustReturn200AndPageVideoResponse_WhenFoundSuccessfully() {
     String uri = VIDEOS_URI+"/1";
-    ResponseEntity<VideoResponse> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<VideoResponse> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
 
@@ -125,7 +127,7 @@ class GetVideosIT {
   @DisplayName("get /videos/{id} must return 404 and ExceptionDetails when not found video")
   void getVideosId_MustReturn404AndExceptionDetails_WhenNotFoundVideo() {
     String uri = VIDEOS_URI+"/1";
-    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
 
@@ -145,7 +147,7 @@ class GetVideosIT {
   @DisplayName("get /videos/{id} must return 400 and ExceptionDetails when id is invalid")
   void getVideosId_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
     String uri = VIDEOS_URI+"/1o";
-    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplate.exchange(
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {
         });
 

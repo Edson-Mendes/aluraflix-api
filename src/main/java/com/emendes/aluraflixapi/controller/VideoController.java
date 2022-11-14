@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -43,6 +44,12 @@ public class VideoController implements VideoControllerSwagger {
   @GetMapping("/{id}")
   public ResponseEntity<VideoResponse> findById(@PathVariable(name = "id") long id) {
     return ResponseEntity.ok(videoService.findById(id));
+  }
+
+  @Override
+  @GetMapping("/free")
+  public ResponseEntity<List<VideoResponse>> fetchFreeSample() {
+    return ResponseEntity.ok(videoService.fetchFirstFive());
   }
 
   @Override

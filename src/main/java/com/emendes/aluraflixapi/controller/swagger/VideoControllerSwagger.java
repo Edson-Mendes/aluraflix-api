@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 public interface VideoControllerSwagger {
 
   @Operation(summary = "Buscar todos os vídeos, opcional buscar por título", tags = {"Video"})
@@ -28,6 +30,13 @@ public interface VideoControllerSwagger {
       @ApiResponse(responseCode = "404", description = "Vídeo não encontrado", content = @Content),
   })
   ResponseEntity<VideoResponse> findById(long id);
+
+
+  @Operation(summary = "Buscar os 5 últimos vídeos adicionados, não necessita autenticação", tags = {"Video"})
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Vídeos encontrados com sucesso")
+  })
+  ResponseEntity<List<VideoResponse>> fetchFreeSample();
 
   @Operation(summary = "Salvar um vídeo", tags = {"Video"})
   @ApiResponses(value = {

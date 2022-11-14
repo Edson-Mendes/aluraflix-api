@@ -24,6 +24,7 @@ public class SecurityConfig {
     http.authorizeRequests()
         .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/favicon.ico")
         .permitAll()
+        .antMatchers(HttpMethod.GET, "/videos/free").permitAll()
         .antMatchers(HttpMethod.POST, "/auth/signup").permitAll();
     http.authorizeRequests().anyRequest().authenticated();
 
