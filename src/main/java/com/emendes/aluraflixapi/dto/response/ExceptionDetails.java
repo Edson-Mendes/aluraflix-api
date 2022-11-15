@@ -21,4 +21,17 @@ public class ExceptionDetails {
   private LocalDateTime timestamp;
   private String path;
 
+  public String json() {
+    String jsonTemplate = """
+        {
+          "title" : "%s",
+          "status" : %d,
+          "details" : "%s",
+          "timestamp" : "%s",
+          "path" : "%s"
+        }
+        """;
+
+    return String.format(jsonTemplate, title, status, details, timestamp, path);
+  }
 }

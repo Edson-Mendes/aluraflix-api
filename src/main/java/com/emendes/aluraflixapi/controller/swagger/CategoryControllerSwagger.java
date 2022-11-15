@@ -23,7 +23,7 @@ public interface CategoryControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Categorias encontradas com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content)
   })
   Page<CategoryResponse> findAll(@ParameterObject Pageable pageable);
 
@@ -31,7 +31,7 @@ public interface CategoryControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Categoria encontrada com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content)
   })
   ResponseEntity<CategoryResponse> findById(int id);
@@ -40,7 +40,7 @@ public interface CategoryControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Encontrou videos dessa categoria com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content)
   })
   ResponseEntity<Page<VideoResponse>> findVideosByCategory(int id, @ParameterObject Pageable pageable);
@@ -49,7 +49,7 @@ public interface CategoryControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Categoria salva com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
       @ApiResponse(responseCode = "409", description = "Já existe categoria com esse título", content = @Content),
   })
   ResponseEntity<CategoryResponse> create(CategoryRequest categoryRequest, UriComponentsBuilder uriBuilder);
@@ -58,7 +58,7 @@ public interface CategoryControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Categoria atualizada com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição"),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada"),
       @ApiResponse(responseCode = "409", description = "Já existe categoria com esse título", content = @Content),
   })
@@ -68,7 +68,7 @@ public interface CategoryControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "204", description = "Categoria deletado com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição"),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
       @ApiResponse(responseCode = "404", description = "Categoria não encontrada"),
   })
   ResponseEntity<Void> delete(int id);

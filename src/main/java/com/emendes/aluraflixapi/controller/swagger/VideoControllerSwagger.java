@@ -20,7 +20,7 @@ public interface VideoControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Vídeos encontrados com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content)
   })
   ResponseEntity<Page<VideoResponse>> findAll(String title, @ParameterObject Pageable pageable);
 
@@ -28,7 +28,7 @@ public interface VideoControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Vídeo encontrado com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
       @ApiResponse(responseCode = "404", description = "Vídeo não encontrado", content = @Content),
   })
   ResponseEntity<VideoResponse> findById(long id);
@@ -44,7 +44,7 @@ public interface VideoControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Vídeo salvo com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content)
   })
   ResponseEntity<VideoResponse> create(VideoRequest videoRequest, UriComponentsBuilder uriBuilder);
 
@@ -52,7 +52,7 @@ public interface VideoControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Vídeo atualizado com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição"),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
       @ApiResponse(responseCode = "404", description = "Vídeo não encontrado")
   })
   ResponseEntity<VideoResponse> update(long id, VideoRequest videoRequest);
@@ -61,7 +61,7 @@ public interface VideoControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "204", description = "Vídeo deletado com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição"),
-      @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
       @ApiResponse(responseCode = "404", description = "Vídeo não encontrado"),
   })
   ResponseEntity<Void> delete(long id);

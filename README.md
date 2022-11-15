@@ -76,6 +76,49 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
       "url": "http://www.xpto.com/duwehdiwehdhweuhd9487jh82"
     }
   ```
+  
+  - `Buscar amostra`: Buscar últimos 5 vídeos adicionados através de um **GET /videos/free**, essa requisição _não_ requer autenticação.
+    Segue abaixo um exemplo do **corpo da resposta**.</br></br>
+
+  ```json
+    [
+      {
+        "id": 12,
+        "title": "Vídeo Comum 12",
+        "description": "Vídeo comum 12",
+        "url": "http://www.funnyvideos.com/d39167ge6gd6gf",
+        "categoryId": 1
+      },
+      {
+        "id": 11,
+        "title": "Vídeo Comum 11",
+        "description": "Vídeo Comum 11",
+        "url": "http://www.xpto.com/f546h56h56h",
+        "categoryId": 1
+      },
+      {
+        "id": 10,
+        "title": "Vídeo Comum 10",
+        "description": "Vídeo comum 10",
+        "url": "http://www.funnyvideos.com/n7j756unbgf",
+        "categoryId": 1
+      },
+      {
+        "id": 9,
+        "title": "Vídeo Comum 9",
+        "description": "Vídeo comum 9",
+        "url": "http://www.funnyvideos.com/b3t24f3f",
+        "categoryId": 1
+      },
+      {
+        "id": 8,
+        "title": "Vídeo Comum 8",
+        "description": "Vídeo comum 8",
+        "url": "http://www.funnyvideos.com/tts6gf",
+        "categoryId": 1
+      }
+   ]
+  ```
 
   - `Atualizar`: Atualizar vídeo através de um PUT **/videos/{ID}**, onde *{ID}* é o identificador do vídeo, 
   os novos dados do vídeo devem ser enviados no corpo da requisição. Segue abaixo um exemplo do **corpo da requisição**.</br></br>
@@ -91,7 +134,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
   - `Deletar`: Deletar vídeo através de um DELETE **/videos/{ID}**, onde *{ID}* é o identificador do vídeo.</br></br>
 
 - `Categorias`
-  - `Cadastrar`: Cadastro de categoria através de um POST **/categories** com as informações de *title* e *color* da
+  - `Cadastrar`: Cadastro de categoria através de um **POST /categories** com as informações de *title* e *color* da
     categoria no corpo da requisição. Segue abaixo um exemplo do **corpo da requisição**.</br></br>
 
   ```json
@@ -101,7 +144,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
     }
   ```
 
-  - `Buscar`: Busca paginada de categorias através de um GET **/categories**. Segue abaixo um exemplo do **corpo da resposta**.</br></br>
+  - `Buscar`: Busca paginada de categorias através de um **GET /categories**. Segue abaixo um exemplo do **corpo da resposta**.</br></br>
   
   ```json
     {
@@ -140,7 +183,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
     }
   ```
   
-  - `Buscar vídeos por categoria`: Busca de vídeos por categoria através de um GET **/categories/{ID}/videos**, 
+  - `Buscar vídeos por categoria`: Busca de vídeos por categoria através de um **GET /categories/{ID}/videos**, 
   onde *{ID}* é o identificador da categoria. Segue abaixo um exemplo do **corpo da resposta**.</br></br>
 
   ```json
@@ -182,7 +225,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
     }
   ```
   
-  - `Buscar por id`: Busca categoria por id através de um GET **/categories/{ID}**, onde *{ID}* é o identificador da categoria. 
+  - `Buscar por id`: Busca categoria por id através de um **GET /categories/{ID}**, onde *{ID}* é o identificador da categoria. 
   Segue abaixo um exemplo do **corpo da resposta**.</br></br>
 
   ```json
@@ -193,7 +236,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
     }
   ```
 
-  - `Atualizar`: Atualizar categoria através de um PUT **/categories/{ID}**, onde *{ID}* é o identificador da categoria, 
+  - `Atualizar`: Atualizar categoria através de um **PUT /categories/{ID}**, onde *{ID}* é o identificador da categoria, 
   os novos dados da categoria devem ser enviados no corpo da requisição. Segue abaixo um exemplo do **corpo da requisição**.</br></br>
 
   ```json
@@ -203,13 +246,22 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
     }
   ```
 
-  - `Deletar`: Deletar categoria através de um DELETE **/categories/{ID}**, onde *{ID}* é o identificador da categoria.
-
-## :card_file_box: Docker
-
-- Container Postgres
-  ```
-    docker-compose -f stack.yml up -d
+  - `Deletar`: Deletar categoria através de um **DELETE /categories/{ID}**, onde *{ID}* é o identificador da categoria.</br></br>
+  
+- `Autenticação`</br></br>
+  Todos os recursos, exceto  **POST /auth/signup** e **GET /videos/free**, requerem clientes autenticados, 
+  o qual deve ser feita em todas as requisições via [basic auth](https://datatracker.ietf.org/doc/html/rfc7617), 
+  enviando o header _**Authorization: Basic username:password**_</br></br>
+  
+  - `Sign Up`: Cadastro de usuário através de um **POST /auth/signup** com os dados do usuário no corpo da requisição.
+  Segue abaixo um exemplo do **corpo da requisição**.</br></br>
+ 
+  ```json
+    {
+      "name" : "Lorem Ipsum",
+      "email" : "lorem@email.com",
+      "password" : "123456"
+    }
   ```
   
 ## :hammer_and_wrench: Deploy
@@ -221,14 +273,14 @@ Que irá subir um container postgres e um container da aplicação Aluraflix.
   ```
     docker-compose -f docker-compose.yml up
   ```
-Após subir os containers, acesse [localhost:22222/swagger-ui.html](localhost:22222/swagger-ui.html) 
+Após subir os containers, acesse <localhost:22222/swagger-ui.html>.
 
 ## :toolbox: Tecnologias
 
 - `Intellij`
 - `Java 17`
 - `Maven`
-- `Spring Boot, Spring MVC, Spring Data JPA`
+- `Spring Boot, Spring MVC, Spring Data JPA, Spring Security`
 - `Docker`
 - `PostgreSQL`
 - `Flyway`
@@ -241,13 +293,12 @@ Após subir os containers, acesse [localhost:22222/swagger-ui.html](localhost:22
 - `Testes de integração`
 
 ## :gear: Atualizações futuras
-- [x] CRUD de Categorias dos vídeos.
-- [x] Relacionamento entre categorias e vídeos.
 - [x] Swagger/OpenApi para uma melhor documentação da api.
 - [ ] HATEOAS para ajudar os clientes a consumirem a API sem a necessidade de conhecimento prévio.
 - [x] Testes de Integração.
-- [x] Fazer os Controllers/Services interagirem com as Services através de interfaces.
 - [ ] Configurarar CORS.
-- [x] Criação de imagem docker do projeto.
-- [ ] Adicionar SignIn e SignUp.
-- [ ] Acesso a recursos apenas autenticado.
+- [ ] Atualizar imagem docker do projeto.
+- [x] Adicionar SignUp.
+- [x] Acesso a recursos apenas autenticado.
+- [ ] Devolver mensagem "amigável" em caso de 409 (Conflict).
+- [ ] Realizar deploy da aplicação em algum serviço cloud.
