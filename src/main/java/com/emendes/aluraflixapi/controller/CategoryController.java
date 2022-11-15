@@ -25,9 +25,7 @@ public class CategoryController implements CategoryControllerSwagger {
 
   @Override
   @GetMapping
-//  TODO: Alterar o valor default de size do pageable
-//  E alterar nos testes
-  public Page<CategoryResponse> findAll(@PageableDefault Pageable pageable) {
+  public Page<CategoryResponse> findAll(@PageableDefault(size = 5) Pageable pageable) {
     return categoryService.findAll(pageable);
   }
 
@@ -40,7 +38,7 @@ public class CategoryController implements CategoryControllerSwagger {
   @Override
   @GetMapping("/{id}/videos")
   public ResponseEntity<Page<VideoResponse>> findVideosByCategory(
-      @PathVariable(name = "id") int id, @PageableDefault Pageable pageable) {
+      @PathVariable(name = "id") int id, @PageableDefault(size = 5) Pageable pageable) {
     return ResponseEntity.ok(categoryService.findVideosByCategoryId(id, pageable));
   }
 

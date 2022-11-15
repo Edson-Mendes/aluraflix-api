@@ -11,10 +11,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@OpenAPIDefinition(tags = @Tag(name = "Authentication"))
+@OpenAPIDefinition(tags = @Tag(name = "Sign Up"))
 public interface SignUpControllerSwagger {
 
-  @Operation(summary = "Criar usuário", tags = {"Authentication"})
+  @Operation(summary = "Criar usuário", tags = {"Sign Up"})
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),

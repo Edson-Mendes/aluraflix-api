@@ -30,7 +30,7 @@ public class VideoController implements VideoControllerSwagger {
   @GetMapping
   public ResponseEntity<Page<VideoResponse>> findAll(
       @RequestParam(name = "search", required = false) String title,
-      @PageableDefault Pageable pageable) {
+      @PageableDefault(size = 5) Pageable pageable) {
     Page<VideoResponse> pageVideoResponse;
     if (title == null) {
       pageVideoResponse = videoService.findAll(pageable);

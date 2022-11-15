@@ -42,7 +42,7 @@ class VideoServiceImplTest {
   @Mock
   private VideoMapper mapperMock;
 
-  private final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10);
+  private final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 5);
 
   //  Mocks comuns entre testes
   @BeforeEach

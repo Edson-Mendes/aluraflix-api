@@ -47,7 +47,7 @@ class CategoryServiceImplTest {
   @Mock
   private VideoRepository videoRepositoryMock;
 
-  private final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 10);
+  private final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 5);
 
   @BeforeEach
   void setUp() {
