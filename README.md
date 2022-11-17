@@ -1,6 +1,6 @@
 <h1 align="center">Alura Flix API</h1>
 
-![Badge Em Desenvolvimento](https://img.shields.io/static/v1?label=Status&message=Em+Desenvolvimento&color=yellow&style=for-the-badge)
+![Badge Concluído](https://img.shields.io/static/v1?label=Status&message=Concluído&color=green&style=for-the-badge)
 ![Badge Java](https://img.shields.io/static/v1?label=Java&message=17&color=red&style=for-the-badge&logo=java)
 ![Badge Spring](https://img.shields.io/static/v1?label=SpringBoot&message=v2.7.5&color=brightgreen&style=for-the-badge&logo=SpringBoot)
 ![Badge JUnit5](https://img.shields.io/static/v1?label=JUnit5&message=v5.8.2&color=green&style=for-the-badge&logo=junit5)
@@ -12,8 +12,24 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
 
 ## :bulb: Funcionalidades
 
+- `Autenticação`</br></br>
+  Todos os recursos, exceto  **POST /auth/signup** e **GET /videos/free**, requerem clientes autenticados,
+  o qual deve ser feita em todas as requisições via [basic auth](https://datatracker.ietf.org/doc/html/rfc7617),
+  enviando o header _**Authorization: Basic username:password**_</br></br>
+
+  - `Sign Up`: Cadastro de usuário através de um **POST /auth/signup** com os dados do usuário no corpo da requisição.
+    Segue abaixo um exemplo do **corpo da requisição**.</br></br>
+
+  ```json
+    {
+      "name" : "Lorem Ipsum",
+      "email" : "lorem@email.com",
+      "password" : "123456"
+    }
+  ```
+
 - `Vídeos`
-  - `Cadastrar`: Cadastro de vídeo através de um POST **/videos** com as informações de *title*, *description* e *url* do
+  - `Cadastrar`: Cadastro de vídeo através de um **POST /videos** com as informações de *title*, *description* e *url* do
     vídeo no corpo da requisição. Segue abaixo um exemplo do **corpo da requisição**.</br></br>
 
   ```json
@@ -24,7 +40,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
     }
   ```
 
-  - `Buscar`: Busca paginada de vídeos através de um GET **/videos**. Opcional buscar por título com parâmetro *search* (e.g. **/videos?search=xpto**).
+  - `Buscar`: Busca paginada de vídeos através de um **GET /videos**. Opcional buscar por título com parâmetro *search* (e.g. **/videos?search=xpto**).
   Segue abaixo um exemplo do **corpo da resposta**.</br></br>
   
   ```json
@@ -65,7 +81,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
     }
   ```
 
-  - `Buscar por id`: Busca vídeo por id através de um GET **/videos/{ID}**, onde *{ID}* é o identificador do vídeo. 
+  - `Buscar por id`: Busca vídeo por id através de um **GET /videos/{ID}**, onde *{ID}* é o identificador do vídeo. 
   Segue abaixo um exemplo do **corpo da resposta**.</br></br>
   
   ```json
@@ -120,7 +136,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
    ]
   ```
 
-  - `Atualizar`: Atualizar vídeo através de um PUT **/videos/{ID}**, onde *{ID}* é o identificador do vídeo, 
+  - `Atualizar`: Atualizar vídeo através de um **PUT /videos/{ID}**, onde *{ID}* é o identificador do vídeo, 
   os novos dados do vídeo devem ser enviados no corpo da requisição. Segue abaixo um exemplo do **corpo da requisição**.</br></br>
 
   ```json
@@ -131,7 +147,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
     }
   ```
 
-  - `Deletar`: Deletar vídeo através de um DELETE **/videos/{ID}**, onde *{ID}* é o identificador do vídeo.</br></br>
+  - `Deletar`: Deletar vídeo através de um **DELETE /videos/{ID}**, onde *{ID}* é o identificador do vídeo.</br></br>
 
 - `Categorias`
   - `Cadastrar`: Cadastro de categoria através de um **POST /categories** com as informações de *title* e *color* da
@@ -247,33 +263,24 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
   ```
 
   - `Deletar`: Deletar categoria através de um **DELETE /categories/{ID}**, onde *{ID}* é o identificador da categoria.</br></br>
-  
-- `Autenticação`</br></br>
-  Todos os recursos, exceto  **POST /auth/signup** e **GET /videos/free**, requerem clientes autenticados, 
-  o qual deve ser feita em todas as requisições via [basic auth](https://datatracker.ietf.org/doc/html/rfc7617), 
-  enviando o header _**Authorization: Basic username:password**_</br></br>
-  
-  - `Sign Up`: Cadastro de usuário através de um **POST /auth/signup** com os dados do usuário no corpo da requisição.
-  Segue abaixo um exemplo do **corpo da requisição**.</br></br>
- 
-  ```json
-    {
-      "name" : "Lorem Ipsum",
-      "email" : "lorem@email.com",
-      "password" : "123456"
-    }
-  ```
+
   
 ## :hammer_and_wrench: Deploy
 
-Até o momento não realizei o deploy da aplicação, mas caso deseje usar/testar/brincar, 
-execute este aquivo [docker-compose.yml](https://github.com/Edson-Mendes/aluraflix-api/blob/main/docker-compose.yml). 
+Realizei o deploy da aplicação na AWS, você pode Testar/Brincar através do [Swagger UI](http://aluraflixapi-env.eba-79ddpr8r.us-east-1.elasticbeanstalk.com/swagger-ui.html).
+Pode criar um usuário ou usar o username _**visitor@email.com**_ com password _**12345678**_.
+Se possível, me avise caso encontre algum bug ou tenha alguma sugestão.</br></br>
+
+## :whale: Criar container docker da aplicação
+
+Execute este aquivo [docker-compose.yml](https://github.com/Edson-Mendes/aluraflix-api/blob/main/docker-compose.yml). 
 Que irá subir um container postgres e um container da aplicação Aluraflix.
 
   ```
     docker-compose -f docker-compose.yml up
   ```
-Após subir os containers, acesse <localhost:22222/swagger-ui.html>.
+
+Após subir os containers, acesse <http://localhost:22222/swagger-ui.html>.
 
 ## :toolbox: Tecnologias
 
@@ -291,14 +298,14 @@ Após subir os containers, acesse <localhost:22222/swagger-ui.html>.
 - `Testcontainers`
 - `Testes de unidade`
 - `Testes de integração`
+- `AWS`
 
 ## :gear: Atualizações futuras
-- [x] Swagger/OpenApi para uma melhor documentação da api.
 - [ ] HATEOAS para ajudar os clientes a consumirem a API sem a necessidade de conhecimento prévio.
-- [x] Testes de Integração.
 - [ ] Configurarar CORS.
-- [ ] Atualizar imagem docker do projeto.
-- [x] Adicionar SignUp.
+- [x] Atualizar imagem docker do projeto.
 - [x] Acesso a recursos apenas autenticado.
 - [ ] Devolver mensagem "amigável" em caso de 409 (Conflict).
-- [ ] Realizar deploy da aplicação em algum serviço cloud.
+- [x] Realizar deploy da aplicação em algum serviço cloud.
+- [ ] Criar funcionalidades de atualizar e deletar usuário.
+- [ ] Adicionar OAuth2 (Apenas para estudar)
