@@ -15,7 +15,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
 - `Autenticação`</br></br>
   Todos os recursos, exceto  **POST /auth/signup** e **GET /videos/free**, requerem clientes autenticados,
   o qual deve ser feita em todas as requisições via [basic auth](https://datatracker.ietf.org/doc/html/rfc7617),
-  enviando o header _**Authorization: Basic username:password**_</br></br>
+  enviando o header _**Authorization: Basic username:password**_</br>
 
   - `Sign Up`: Cadastro de usuário através de um **POST /auth/signup** com os dados do usuário no corpo da requisição.
     Segue abaixo um exemplo do **corpo da requisição**.</br></br>
@@ -268,7 +268,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
 ## :hammer_and_wrench: Deploy
 
 Realizei o deploy da aplicação na AWS, você pode Testar/Brincar através do [Swagger UI](http://aluraflixapi-env.eba-79ddpr8r.us-east-1.elasticbeanstalk.com/swagger-ui.html).
-Pode criar um usuário ou usar o username _**visitor@email.com**_ com password _**12345678**_.
+Pode criar um usuário ou usar o username _**visitor@email.com**_ com password _**12345678**_.</br>
 Se possível, me avise caso encontre algum bug ou tenha alguma sugestão.</br></br>
 
 ## :whale: Criar container docker da aplicação
