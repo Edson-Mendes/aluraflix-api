@@ -35,7 +35,7 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private boolean enabled;
   private LocalDateTime deletedAt;
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY)
   @OnDelete(action = OnDeleteAction.CASCADE)
   @JoinTable(
       name = "tb_user_roles",
