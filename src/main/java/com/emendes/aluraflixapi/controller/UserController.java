@@ -8,10 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,6 +27,13 @@ public class UserController implements UserControllerSwagger {
   @Override
   public ResponseEntity<UserResponse> findById(@PathVariable(name = "id") long id) {
     return ResponseEntity.ok(userService.findById(id));
+  }
+
+  @DeleteMapping("/{id}")
+  @Override
+  public ResponseEntity<Void> delete(@PathVariable(name = "id") long id) {
+    userService.delete(id);
+    return ResponseEntity.noContent().build();
   }
 
 }

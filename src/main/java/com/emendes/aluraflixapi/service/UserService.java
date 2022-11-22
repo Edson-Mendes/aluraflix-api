@@ -10,4 +10,6 @@ public interface UserService {
 
   UserResponse findById(Long id);
 
+  void delete(Long id);
+
 }

@@ -34,4 +34,15 @@ public interface UserControllerSwagger {
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content)
   })
   ResponseEntity<UserResponse> findById(long id);
+
+  @Operation(summary = "Deletar usuário por id", tags = {"User"})
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "204", description = "Usuário deletado com sucesso"),
+      @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
+      @ApiResponse(responseCode = "403", description = "Usuário não tem permissão de acesso", content = @Content),
+      @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content)
+  })
+  ResponseEntity<Void> delete(long id);
+
 }

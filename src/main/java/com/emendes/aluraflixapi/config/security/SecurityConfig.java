@@ -33,7 +33,7 @@ public class SecurityConfig {
     http.authorizeRequests()
         .antMatchers(HttpMethod.GET, AUTH_WHITELIST).permitAll()
         .antMatchers(HttpMethod.POST, "/auth/signup").permitAll()
-        .antMatchers(HttpMethod.GET, "/users", "/users/*").hasRole("ADMIN");
+        .antMatchers("/users", "/users/*").hasRole("ADMIN");
     http.authorizeRequests().anyRequest().authenticated();
 
     http.httpBasic(withDefaults()).userDetailsService(userDetailsService)
