@@ -11,10 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -86,6 +83,42 @@ class UserServiceImplTest {
 
       Assertions.assertThatExceptionOfType(UserNotFoundException.class)
           .isThrownBy(() -> userService.findById(9999L))
+          .withMessage("User not found for id: "+ 9999L);
+    }
+
+  }
+
+  @Nested
+  @DisplayName("Tests for delete method")
+  class DeleteMethod {
+
+    @Captor
+    private ArgumentCaptor<User> userCaptor;
+
+    @Test
+    @DisplayName("delete must change fields enabled and deleteAt when delete successfully")
+    void delete_MustChangeFieldsEnabledAndDeleteAt_WhenDeleteSuccessfully() {
+      BDDMockito.when(userRepositoryMock.findById(1000L))
+          .thenReturn(optionalUser());
+
+      userService.delete(1000L);
+
+      BDDMockito.verify(userRepositoryMock).save(userCaptor.capture());
+      User actualDeletedUser = userCaptor.getValue();
+
+      Assertions.assertThat(actualDeletedUser).isNotNull();
+      Assertions.assertThat(actualDeletedUser.isEnabled()).isFalse();
+      Assertions.assertThat(actualDeletedUser.getDeletedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("delete must throws UserNotFoundException when not found user")
+    void delete_MustThrowsUserNotFoundException_WhenNotFoundUser() {
+      BDDMockito.when(userRepositoryMock.findById(9999L))
+          .thenReturn(Optional.empty());
+
+      Assertions.assertThatExceptionOfType(UserNotFoundException.class)
+          .isThrownBy(() -> userService.delete(9999L))
           .withMessage("User not found for id: "+ 9999L);
     }
 

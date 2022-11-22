@@ -27,9 +27,6 @@ import java.util.List;
 class GetUsersIT {
 
   @Autowired
-  @Qualifier("withAuthorizationHeader")
-  private TestRestTemplate testRestTemplate;
-  @Autowired
   @Qualifier("withoutAuthorizationHeader")
   private TestRestTemplate testRestTemplateNoAuth;
 
@@ -102,6 +99,25 @@ class GetUsersIT {
   }
 
   @Test
+  @Sql(scripts = {"/user/insert_admin.sql"})
+  @DisplayName("get /users/{id} must return 400 and ExceptionDetails when id is invalid")
+  void getUsersId_MustReturn400AndExceptionDetails_WhenIdIsInvalid() {
+    String uri = USERS_URI + "/1ooo";
+
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplateNoAuth
+        .withBasicAuth("dolor@email.com", "123456")
+        .exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+    ExceptionDetails actualBody = responseEntity.getBody();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
+    Assertions.assertThat(actualBody).isNotNull();
+    Assertions.assertThat(actualBody.getTitle()).isEqualTo("Failed to convert");
+    Assertions.assertThat(actualBody.getPath()).isEqualTo("/users/1ooo");
+  }
+
+  @Test
   @Sql(scripts = {"/user/insert.sql", "/user/insert_admin.sql"})
   @DisplayName("get /users/{id} must return 401 and ExceptionDetails when user is not authenticated")
   void getUsersId_MustReturn401AndExceptionDetails_WhenUserIsNotAuthenticated() {
@@ -134,8 +150,8 @@ class GetUsersIT {
 
   @Test
   @Sql(scripts = {"/user/insert_admin.sql"})
-  @DisplayName("get /users/{id} must return 404 and ExceptionDetails when do not exists user with given id")
-  void getUsersId_MustReturn404AndExceptionDetails_WhenUserIsNotAuthenticated() {
+  @DisplayName("get /users/{id} must return 404 and ExceptionDetails when user not found")
+  void getUsersId_MustReturn404AndExceptionDetails_WhenUserNotFound() {
     String uri = USERS_URI + "/99999";
     ResponseEntity<ExceptionDetails> responseEntity = testRestTemplateNoAuth
         .withBasicAuth("dolor@email.com", "123456")
