@@ -1,6 +1,5 @@
 package com.emendes.aluraflixapi.config.security;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-//@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
@@ -26,13 +24,16 @@ public class SecurityConfig {
   @Autowired
   private UserDetailsService userDetailsService;
 
+  private static final String[] AUTH_WHITELIST = {
+      "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/favicon.ico", "/videos/free"
+  };
+
   @Bean
   public SecurityFilterChain web(HttpSecurity http) throws Exception {
     http.authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/favicon.ico")
-        .permitAll()
-        .antMatchers(HttpMethod.GET, "/videos/free").permitAll()
-        .antMatchers(HttpMethod.POST, "/auth/signup").permitAll();
+        .antMatchers(HttpMethod.GET, AUTH_WHITELIST).permitAll()
+        .antMatchers(HttpMethod.POST, "/auth/signup").permitAll()
+        .antMatchers(HttpMethod.GET, "/users", "/users/*").hasRole("ADMIN");
     http.authorizeRequests().anyRequest().authenticated();
 
     http.httpBasic(withDefaults()).userDetailsService(userDetailsService)

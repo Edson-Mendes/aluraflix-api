@@ -302,7 +302,7 @@ Após subir os containers, acesse <http://localhost:22222/swagger-ui.html>.
 
 ## :gear: Atualizações futuras
 - [ ] HATEOAS para ajudar os clientes a consumirem a API sem a necessidade de conhecimento prévio.
-- [ ] Configurarar CORS.
+- [ ] Configurar CORS.
 - [x] Atualizar imagem docker do projeto.
 - [x] Acesso a recursos apenas autenticado.
 - [ ] Devolver mensagem "amigável" em caso de 409 (Conflict).
