@@ -1,5 +1,6 @@
 package com.emendes.aluraflixapi.controller.swagger;
 
+import com.emendes.aluraflixapi.dto.request.ChangePasswordRequest;
 import com.emendes.aluraflixapi.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +35,14 @@ public interface UserControllerSwagger {
       @ApiResponse(responseCode = "404", description = "Usuário não encontrado", content = @Content)
   })
   ResponseEntity<UserResponse> findById(long id);
+
+  @Operation(summary = "Atualizar senha do usuário", tags = {"User"})
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "204", description = "Senha alterada com sucesso"),
+      @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content)
+  })
+  ResponseEntity<Void> changePassword(ChangePasswordRequest changePasswordRequest);
 
   @Operation(summary = "Deletar usuário por id", tags = {"User"})
   @ApiResponses(value = {

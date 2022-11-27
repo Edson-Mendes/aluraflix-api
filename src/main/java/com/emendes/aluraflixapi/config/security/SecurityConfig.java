@@ -33,6 +33,7 @@ public class SecurityConfig {
     http.authorizeRequests()
         .antMatchers(HttpMethod.GET, AUTH_WHITELIST).permitAll()
         .antMatchers(HttpMethod.POST, "/auth/signup").permitAll()
+        .antMatchers("/users/password").hasRole("USER")
         .antMatchers("/users", "/users/*").hasRole("ADMIN");
     http.authorizeRequests().anyRequest().authenticated();
 

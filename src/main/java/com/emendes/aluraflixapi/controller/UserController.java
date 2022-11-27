@@ -1,6 +1,7 @@
 package com.emendes.aluraflixapi.controller;
 
 import com.emendes.aluraflixapi.controller.swagger.UserControllerSwagger;
+import com.emendes.aluraflixapi.dto.request.ChangePasswordRequest;
 import com.emendes.aluraflixapi.dto.response.UserResponse;
 import com.emendes.aluraflixapi.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,6 +30,13 @@ public class UserController implements UserControllerSwagger {
   @Override
   public ResponseEntity<UserResponse> findById(@PathVariable(name = "id") long id) {
     return ResponseEntity.ok(userService.findById(id));
+  }
+
+  @PutMapping("/password")
+  @Override
+  public ResponseEntity<Void> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+    userService.changePassword(changePasswordRequest);
+    return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/{id}")
