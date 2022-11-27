@@ -112,7 +112,6 @@ class UserServiceImplTest {
     @Test
     @DisplayName("changePassword must change password field when successfully")
     void changePassword_MustChangePasswordField_WhenSuccessfully() {
-//      BDDMockito.when(currentUserMock.getCurrentUser()).thenReturn(user());
       BDDMockito.when(passwordEncoderMock.matches(ArgumentMatchers.any(String.class), ArgumentMatchers.any(String.class)))
           .thenReturn(true);
       BDDMockito.when(passwordEncoderMock.encode("12345678")).thenReturn("mock_encoded_password");
@@ -132,7 +131,6 @@ class UserServiceImplTest {
     @Test
     @DisplayName("changePassword must throws PasswordException when user send wrong old password")
     void changePassword_MustThrowsPasswordException_WhenUserSendWrongOldPassword() {
-//      BDDMockito.when(currentUserMock.getCurrentUser()).thenReturn(user());
       BDDMockito.when(passwordEncoderMock.matches(ArgumentMatchers.any(String.class), ArgumentMatchers.any(String.class)))
           .thenReturn(false);
 
@@ -147,7 +145,6 @@ class UserServiceImplTest {
     @Test
     @DisplayName("changePassword must throws PasswordException when newPassword and confirmPassword doesn't match")
     void changePassword_MustThrowsPasswordException_WhenNewPasswordAndConfirmPasswordDoesntMatch() {
-//      BDDMockito.when(currentUserMock.getCurrentUser()).thenReturn(user());
       BDDMockito.when(passwordEncoderMock.matches(ArgumentMatchers.any(String.class), ArgumentMatchers.any(String.class)))
           .thenReturn(true);
 
