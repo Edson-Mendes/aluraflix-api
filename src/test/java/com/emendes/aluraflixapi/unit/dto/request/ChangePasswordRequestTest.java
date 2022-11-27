@@ -1,7 +1,6 @@
 package com.emendes.aluraflixapi.unit.dto.request;
 
 import com.emendes.aluraflixapi.dto.request.ChangePasswordRequest;
-import com.emendes.aluraflixapi.dto.request.ChangePasswordRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
