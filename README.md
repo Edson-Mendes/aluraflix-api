@@ -12,7 +12,7 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
 
 ## :bulb: Funcionalidades
 
-- `Autenticação`</br></br>
+- `Autenticação`</br>
   Todos os recursos, exceto  **POST /auth/signup** e **GET /videos/free**, requerem clientes autenticados,
   o qual deve ser feita em todas as requisições via [basic auth](https://datatracker.ietf.org/doc/html/rfc7617),
   enviando o header _**Authorization: Basic username:password**_</br>
@@ -264,6 +264,22 @@ Alura Flix é uma plataforma de compartilhamento de vídeos. Projeto proposto pe
 
   - `Deletar`: Deletar categoria através de um **DELETE /categories/{ID}**, onde *{ID}* é o identificador da categoria.</br></br>
 
+- `Usuários`
+  - `Alterar senha`: Alterar senha do usuário através de um **PUT /users/password**. Segue abaixo um exemplo do **corpo da requisição**.</br></br>
+  
+  ```json
+    {
+      "oldPassword": "123456",
+      "newPassword": "12345678", 
+      "confirmPassword": "12345678" 
+    }
+  ```
+  
+  - `Buscar` Busca paginada de usuários através de um **GET /users**. **Apenas administradores podem realizar essa busca**.</br></br>
+  - `Buscar por id`: Busca usuário por id através de um **GET /users/{ID}**, onde *{ID}* é o identificador do usuário.
+    **Apenas administradores podem realizar essa busca**.</br></br>
+  - `Deletar`: Deletar usuário através de um **DELETE /users/{ID}**, onde *{ID}* é o identificador do usuário.
+    **Apenas administradores podem excluir usuários**.</br></br>
   
 ## :hammer_and_wrench: Deploy
 
@@ -305,7 +321,7 @@ Após subir os containers, acesse <http://localhost:22222/swagger-ui.html>.
 - [ ] Configurar CORS.
 - [x] Atualizar imagem docker do projeto.
 - [x] Acesso a recursos apenas autenticado.
-- [ ] Devolver mensagem "amigável" em caso de 409 (Conflict).
+- [x] Devolver mensagem "amigável" em caso de 409 (Conflict).
 - [x] Realizar deploy da aplicação em algum serviço cloud.
-- [ ] Criar funcionalidades de atualizar e deletar usuário.
+- [x] Criar funcionalidades de atualizar e deletar usuário.
 - [ ] Adicionar OAuth2 (Apenas para estudar)

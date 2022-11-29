@@ -21,7 +21,7 @@ services:
       - af-db-volume:/var/lib/postgresql/data
 
   app:
-    image: edsonmendes/aluraflix:0.3-semana3
+    image: edsonmendes/aluraflix:latest
     container_name: af-app
     depends_on:
       - db

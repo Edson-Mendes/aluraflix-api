@@ -10,8 +10,6 @@ import com.emendes.aluraflixapi.model.entity.Video;
 import com.emendes.aluraflixapi.repository.VideoRepository;
 import com.emendes.aluraflixapi.service.CategoryServiceImpl;
 import com.emendes.aluraflixapi.service.VideoServiceImpl;
-import com.emendes.aluraflixapi.util.creator.VideoCreator;
-import com.emendes.aluraflixapi.util.creator.VideoResponseCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -61,11 +59,11 @@ class VideoServiceImplTest {
     @DisplayName("findAll must return Page<VideoResponse> when Found successfully")
     void findAll_MustReturnPageVideoResponse_WhenFoundSuccessfully() {
       BDDMockito.when(videoRepositoryMock.findAll(DEFAULT_PAGEABLE)) // Mock comportamento.
-          .thenReturn(VideoCreator.videosPage(DEFAULT_PAGEABLE));
+          .thenReturn(videosPage());
 
       Page<VideoResponse> actualVideoResponsePage = videoService.findAll(DEFAULT_PAGEABLE);
 
-      VideoResponse expectedVideoResponse = VideoResponseCreator.fromVideo(VideoCreator.withAllParameters());
+      VideoResponse expectedVideoResponse = videoResponse();
       Assertions.assertThat(actualVideoResponsePage)
           .isNotEmpty()
           .hasSize(1)

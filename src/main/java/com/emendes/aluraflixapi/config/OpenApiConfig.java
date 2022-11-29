@@ -19,7 +19,7 @@ public class OpenApiConfig {
     return new OpenAPI()
         .info(new Info().title("Alura Flix API")
             .description("Alura Challenge Backend 5 ed")
-            .version("0.3-semana3").contact(contact))
+            .version("1.0").contact(contact))
         .components(new Components()
             .addSecuritySchemes("Basic auth", new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP).scheme("basic").bearerFormat("username:password")));

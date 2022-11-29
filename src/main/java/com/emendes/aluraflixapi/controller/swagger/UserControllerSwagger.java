@@ -21,8 +21,8 @@ public interface UserControllerSwagger {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Usuários encontrado com sucesso"),
       @ApiResponse(responseCode = "400", description = "Algo de errado com a requisição", content = @Content),
-      @ApiResponse(responseCode = "403", description = "Usuário não tem permissão de acesso", content = @Content),
-      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content)
+      @ApiResponse(responseCode = "401", description = "Unauthorized, falha na autenticação", content = @Content),
+      @ApiResponse(responseCode = "403", description = "Usuário não tem permissão de acesso", content = @Content)
   })
   ResponseEntity<Page<UserResponse>> fetchAll(@ParameterObject Pageable pageable);
 

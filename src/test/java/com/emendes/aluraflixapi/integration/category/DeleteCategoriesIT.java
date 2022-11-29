@@ -35,7 +35,7 @@ class DeleteCategoriesIT {
   @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("delete /categories/{id} must return 204 when delete successfully")
   void deleteCategoriesId_MustReturn204_WhenDeleteSuccessfully() {
-    String uri = String.format(CATEGORIES_URI_TEMPLATE, 2);
+    String uri = String.format(CATEGORIES_URI_TEMPLATE, 50);
 
     ResponseEntity<Void> responseEntity = testRestTemplateWithAuth.exchange(
         uri, HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {});

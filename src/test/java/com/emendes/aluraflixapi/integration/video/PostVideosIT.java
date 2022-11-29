@@ -40,7 +40,7 @@ class PostVideosIT {
   @DisplayName("post /videos must return 201 and VideoResponse when create successfully")
   void postVideos_MustReturn201AndVideoResponse_WhenCreateSuccessfully() {
     VideoRequest videoRequest = new VideoRequest("Vídeo lorem ipsum", "Descrição xpto sobre o vídeo",
-        "http://www.xpto.com/fe23ac5", 2);
+        "http://www.xpto.com/fe23ac5", 50);
     HttpEntity<VideoRequest> requestEntity = new HttpEntity<>(videoRequest);
 
     ResponseEntity<VideoResponse> responseEntity = testRestTemplate.exchange(
@@ -50,7 +50,7 @@ class PostVideosIT {
     VideoResponse actualBody = responseEntity.getBody();
 
     VideoResponse expectedBody = new VideoResponse(1L, "Vídeo lorem ipsum",
-        "Descrição xpto sobre o vídeo", "http://www.xpto.com/fe23ac5", 2);
+        "Descrição xpto sobre o vídeo", "http://www.xpto.com/fe23ac5", 50);
 
     Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.CREATED);
     Assertions.assertThat(actualBody).isNotNull().isEqualTo(expectedBody);

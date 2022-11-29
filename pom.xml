@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.emendes</groupId>
 	<artifactId>aluraflix-api</artifactId>
-	<version>0.3-semana3</version>
+	<version>1.0</version>
 	<name>aluraflix-api</name>
 	<description>API de uma plataforma de compartilhamento de vídeos.</description>
 	<properties>

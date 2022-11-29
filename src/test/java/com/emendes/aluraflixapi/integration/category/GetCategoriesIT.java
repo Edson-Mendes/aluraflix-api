@@ -59,14 +59,14 @@ class GetCategoriesIT {
   @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("get /categories/{id} must return 200 and CategoryResponse when found category successfully")
   void getCategoriesId_MustReturn200AndPageCategoryResponse_WhenFoundSuccessfully() {
-    String uri = CATEGORIES_URI + "/2";
+    String uri = CATEGORIES_URI + "/50";
     ResponseEntity<CategoryResponse> responseEntity = testRestTemplate.exchange(
         uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
 
     HttpStatus actualStatus = responseEntity.getStatusCode();
     CategoryResponse actualBody = responseEntity.getBody();
 
-    CategoryResponse expectedCategoryResponse = new CategoryResponse(2, "Terror", "808080");
+    CategoryResponse expectedCategoryResponse = new CategoryResponse(50, "Terror", "808080");
 
     Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.OK);
     Assertions.assertThat(actualBody).isNotNull().isEqualTo(expectedCategoryResponse);
