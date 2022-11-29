@@ -1,9 +1,9 @@
 package com.emendes.aluraflixapi.integration.category;
 
 import com.emendes.aluraflixapi.dto.request.CategoryRequest;
+import com.emendes.aluraflixapi.dto.response.CategoryResponse;
 import com.emendes.aluraflixapi.dto.response.ExceptionDetails;
 import com.emendes.aluraflixapi.dto.response.ValidationExceptionDetails;
-import com.emendes.aluraflixapi.dto.response.CategoryResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class PutCategoriesIT {
   @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
   @DisplayName("put /categories/{id} must return 200 and CategoryResponse when update successfully")
   void putCategoriesId_MustReturn200AndCategoryResponse_WhenUpdateSuccessfully() {
-    String uri = String.format(CATEGORIES_URI, 2);
+    String uri = String.format(CATEGORIES_URI, 50);
     CategoryRequest categoryRequest = new CategoryRequest("Terror XPTO", "808080");
     HttpEntity<CategoryRequest> requestEntity = new HttpEntity<>(categoryRequest);
 
@@ -50,7 +50,7 @@ class PutCategoriesIT {
     HttpStatus actualStatus = responseEntity.getStatusCode();
     CategoryResponse actualBody = responseEntity.getBody();
 
-    CategoryResponse expectedBody = new CategoryResponse(2, "Terror XPTO", "808080");
+    CategoryResponse expectedBody = new CategoryResponse(50, "Terror XPTO", "808080");
 
     Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.OK);
     Assertions.assertThat(actualBody).isNotNull().isEqualTo(expectedBody);
@@ -155,6 +155,28 @@ class PutCategoriesIT {
     HttpStatus actualStatus = responseEntity.getStatusCode();
 
     Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.UNAUTHORIZED);
+  }
+
+  @Test
+  @Sql(scripts = {"/category/insert.sql", "/user/insert.sql"})
+  @DisplayName("put /categories/{id} must return 409 and ExceptionDetails when already exists category with given title")
+  void putCategoriesId_MustReturn409AndExceptionDetails_WhenAlreadyExistsCategoryWithGivenTitle() {
+    String uri = String.format(CATEGORIES_URI, 50);
+    CategoryRequest categoryRequest = new CategoryRequest("Comédia Lorem", "808080");
+    HttpEntity<CategoryRequest> requestEntity = new HttpEntity<>(categoryRequest);
+
+    ResponseEntity<ExceptionDetails> responseEntity = testRestTemplate.exchange(
+        uri, HttpMethod.PUT, requestEntity, new ParameterizedTypeReference<>() {});
+
+    HttpStatus actualStatus = responseEntity.getStatusCode();
+    ExceptionDetails actualBody = responseEntity.getBody();
+
+    Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.CONFLICT);
+    Assertions.assertThat(actualBody).isNotNull();
+    Assertions.assertThat(actualBody.getTitle()).isEqualTo("Data conflict");
+    Assertions.assertThat(actualBody.getDetails()).isEqualTo("the given title already exists");
+    Assertions.assertThat(actualBody.getStatus()).isEqualTo(409);
+    Assertions.assertThat(actualBody.getPath()).isEqualTo("/categories/50");
   }
 
 }

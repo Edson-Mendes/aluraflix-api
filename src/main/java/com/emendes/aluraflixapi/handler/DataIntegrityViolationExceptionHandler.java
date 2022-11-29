@@ -13,22 +13,28 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class DataIntegrityViolationExceptionHandler {
 
-//  TODO: Pesquisar como devolver uma mensagem mais amigável para o cliente.
-//  Aqui esta caindo caso de qualquer problema de integridade no banco de dados, campos nulos,
-//  unique constraints e foreign key inválida!
-//  Uma solução pode ser criar um ExceptionResolver para adaptar a mensagem/HttpStatus de acordo com a mensagem dentro da exception.
   @ExceptionHandler(DataIntegrityViolationException.class)
   public ResponseEntity<ExceptionDetails> handleDataIntegrityViolation(
       DataIntegrityViolationException exception, HttpServletRequest request) {
     ExceptionDetails details = ExceptionDetails.builder()
         .status(HttpStatus.CONFLICT.value())
         .title("Data conflict")
-        .details(exception.getMessage())
+        .details(messageResolver(exception.getMessage()))
         .timestamp(LocalDateTime.now())
         .path(request.getRequestURI())
         .build();
 
     return ResponseEntity.status(HttpStatus.CONFLICT).body(details);
+  }
+
+  private String messageResolver(String message) {
+    if (message == null)
+      return "";
+    if (message.contains("f_email_unique"))
+      return "email is already in use";
+    if (message.contains("f_title_unique"))
+      return "the given title already exists";
+    return message;
   }
 
 }

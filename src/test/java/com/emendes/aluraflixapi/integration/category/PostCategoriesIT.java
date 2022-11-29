@@ -93,6 +93,7 @@ class PostCategoriesIT {
     Assertions.assertThat(actualStatus).isEqualByComparingTo(HttpStatus.CONFLICT);
     Assertions.assertThat(actualBody).isNotNull();
     Assertions.assertThat(actualBody.getTitle()).isEqualTo("Data conflict");
+    Assertions.assertThat(actualBody.getDetails()).isEqualTo("the given title already exists");
     Assertions.assertThat(actualBody.getStatus()).isEqualTo(409);
     Assertions.assertThat(actualBody.getPath()).isEqualTo("/categories");
   }
